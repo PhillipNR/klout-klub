@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/tribunal.js": {
-      "memory": 256
+      "runtime": "nodejs20.x"
     }
   }
 }
