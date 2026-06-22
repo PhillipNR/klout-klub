@@ -1,4 +1,3 @@
-
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -13,16 +12,24 @@ module.exports = async function handler(req, res) {
   }
  
   try {
-    // Handle body parsing manually if needed
-    let body = req.body;
-    if (typeof body === 'string') {
-      body = JSON.parse(body);
+    // Read raw body from stream
+    const rawBody = await new Promise((resolve, reject) => {
+      let data = '';
+      req.on('data', chunk => { data += chunk; });
+      req.on('end', () => resolve(data));
+      req.on('error', reject);
+    });
+ 
+    let prompt;
+    try {
+      const parsed = JSON.parse(rawBody);
+      prompt = parsed.prompt;
+    } catch(e) {
+      return res.status(400).json({ error: 'Could not parse request body: ' + rawBody.slice(0, 100) });
     }
  
-    const prompt = body && body.prompt;
- 
     if (!prompt) {
-      return res.status(400).json({ error: 'No prompt provided' });
+      return res.status(400).json({ error: 'No prompt in body' });
     }
  
     const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
@@ -45,7 +52,7 @@ module.exports = async function handler(req, res) {
     try {
       data = JSON.parse(text);
     } catch(e) {
-      return res.status(500).json({ error: 'Bad response from Anthropic: ' + text.slice(0, 200) });
+      return res.status(500).json({ error: 'Bad Anthropic response: ' + text.slice(0, 200) });
     }
  
     if (data.error) {
@@ -53,12 +60,12 @@ module.exports = async function handler(req, res) {
     }
  
     if (!data.content || !data.content[0]) {
-      return res.status(500).json({ error: 'No content in response: ' + JSON.stringify(data).slice(0, 200) });
+      return res.status(500).json({ error: 'Empty response: ' + JSON.stringify(data).slice(0, 200) });
     }
  
     return res.status(200).json({ verdict: data.content[0].text });
  
   } catch (err) {
-    return res.status(500).json({ error: 'Tribunal error: ' + err.message });
+    return res.status(500).json({ error: 'Caught error: ' + err.message });
   }
 }
