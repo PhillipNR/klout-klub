@@ -1,37 +1,24 @@
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
- 
+
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    res.status(200).end();
+    return;
   }
- 
+
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
   }
- 
+
   try {
-    // Read raw body from stream
-    const rawBody = await new Promise((resolve, reject) => {
-      let data = '';
-      req.on('data', chunk => { data += chunk; });
-      req.on('end', () => resolve(data));
-      req.on('error', reject);
-    });
- 
-    let prompt;
-    try {
-      const parsed = JSON.parse(rawBody);
-      prompt = parsed.prompt;
-    } catch(e) {
-      return res.status(400).json({ error: 'Could not parse request body: ' + rawBody.slice(0, 100) });
-    }
- 
+    const prompt = req.body && req.body.prompt;
+
     if (!prompt) {
-      return res.status(400).json({ error: 'No prompt in body' });
+      res.status(400).json({ error: 'No prompt provided' });
+      return;
     }
- 
+
     const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -45,27 +32,17 @@ module.exports = async function handler(req, res) {
         messages: [{ role: 'user', content: prompt }]
       })
     });
- 
-    const text = await anthropicRes.text();
-    
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch(e) {
-      return res.status(500).json({ error: 'Bad Anthropic response: ' + text.slice(0, 200) });
-    }
- 
+
+    const data = await anthropicRes.json();
+
     if (data.error) {
-      return res.status(500).json({ error: data.error.message });
+      res.status(500).json({ error: data.error.message });
+      return;
     }
- 
-    if (!data.content || !data.content[0]) {
-      return res.status(500).json({ error: 'Empty response: ' + JSON.stringify(data).slice(0, 200) });
-    }
- 
-    return res.status(200).json({ verdict: data.content[0].text });
- 
+
+    res.status(200).json({ verdict: data.content[0].text });
+
   } catch (err) {
-    return res.status(500).json({ error: 'Caught error: ' + err.message });
+    res.status(500).json({ error: err.message });
   }
 }
