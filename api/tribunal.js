@@ -1,24 +1,27 @@
-module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-
+export const config = {
+  runtime: 'edge',
+};
+ 
+export default async function handler(req) {
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+    return new Response(null, {
+      status: 200,
+      headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST', 'Access-Control-Allow-Headers': 'Content-Type' }
+    });
   }
-
+ 
   if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method not allowed' });
-    return;
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
   }
-
+ 
   try {
-    const prompt = req.body && req.body.prompt;
-
+    const body = await req.json();
+    const prompt = body.prompt;
+ 
     if (!prompt) {
-      res.status(400).json({ error: 'No prompt provided' });
-      return;
+      return new Response(JSON.stringify({ error: 'No prompt provided' }), { status: 400 });
     }
-
+ 
     const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -32,17 +35,25 @@ module.exports = async function handler(req, res) {
         messages: [{ role: 'user', content: prompt }]
       })
     });
-
+ 
     const data = await anthropicRes.json();
-
+ 
     if (data.error) {
-      res.status(500).json({ error: data.error.message });
-      return;
+      return new Response(JSON.stringify({ error: data.error.message }), { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
     }
-
-    res.status(200).json({ verdict: data.content[0].text });
-
+ 
+    return new Response(JSON.stringify({ verdict: data.content[0].text }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+    });
+ 
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return new Response(JSON.stringify({ error: 'Edge error: ' + err.message }), { 
+      status: 500,
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+    });
   }
 }
