@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Клоут Клуб - The True Internet Power</title>
+    <style>
+        /* ========== BASIC STYLES ========== */
+        body {
+            font-family: "Comic Sans MS", sans-serif;
+            background: url('https://i.imgur.com/something.jpg') repeat;
+            color: lime;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ========== HEADER STYLES ========== */
+        header {
+            background-color: #0000FF;
+            padding: 30px;
+            font-size: 35px;
+            font-weight: bold;
+            text-shadow: 2px 2px yellow;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Comrade Clout (Left Side) */
+        .comrade-clout {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 250px;
+            height: auto;
+            animation: colorShift 3s infinite linear;
+        }
+
+        /* Top Right Image */
+        .top-right-image {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 250px; /* Adjust as needed */
+            height: auto;
+        }
+
+        /* Comrade Clout color animation */
+        @keyframes colorShift {
+            0% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(180deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER WITH COMRADE CLOUT & TOP RIGHT IMAGE -->
+    <header>
+        <img src="ComradeClout2.png" class="comrade-clout" alt="Comrade Clout">
+        <h1>КЛОУТ КЛУБ™ - True Internet Power</h1>
+        <img src="header1r.png" class="top-right-image" alt="Extra Image">
+    </header>
+
+
+
+
+
+
+
+
+    <!-- ₭ KRUBLZ TICKER BAR -->
+    <div class="krublz-ticker-bar">
+        <div class="krublz-ticker-inner">
+            <span class="krublz-rate">₭ OFFICIAL KRUBLZ EXCHANGE: <span id="exchangeRate">847</span> KRUBLZ = $1.00 USD &nbsp;|&nbsp; RATE FLUCTUATE, IS ECONOMY &nbsp;|&nbsp;</span>
+            <span>₭ YOUR BALANCE: <span id="krublzBalance">0</span> KRUBLZ &nbsp;|&nbsp;</span>
+            <span>₭ KRUBLZ HAVE NO REAL VALUE. NEITHER DO YOUR FOLLOWERS. &nbsp;|&nbsp;</span>
+            <span>₭ OFFICIAL CURRENCY OF КЛОУТ КЛУБ™ SINCE 2024 &nbsp;|&nbsp;</span>
+            <span>₭ NOT RESPONSIBLE FOR ECONOMIC COLLAPSE &nbsp;|&nbsp;</span>
+        </div>
+    </div>
+
+    <style>
+        .krublz-ticker-bar {
+            background: #111;
+            border-bottom: 3px solid gold;
+            border-top: 3px solid gold;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 8px 0;
+            font-size: 14px;
+            font-weight: bold;
+            color: gold;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+        .krublz-ticker-inner {
+            display: inline-block;
+            animation: tickerScroll 30s linear infinite;
+        }
+        @keyframes tickerScroll {
+            from { transform: translateX(100vw); }
+            to { transform: translateX(-100%); }
+        }
+        .krublz-rate { color: lime; }
+    </style>
+
+    <script>
+        // Krublz state - persisted in localStorage
+        const KrublzState = {
+            get balance() { return parseInt(localStorage.getItem('krublz_balance') || '0'); },
+            set balance(v) { localStorage.setItem('krublz_balance', v); document.getElementById('krublzBalance').innerText = v.toLocaleString(); },
+            get criminals() { return JSON.parse(localStorage.getItem('krublz_criminals') || '{}'); },
+            setCriminal(name, data) {
+                const c = this.criminals;
+                c[name.toLowerCase()] = data;
+                localStorage.setItem('krublz_criminals', JSON.stringify(c));
+            },
+            getCriminal(name) { return this.criminals[name.toLowerCase()] || null; },
+            get leaderboard() { return JSON.parse(localStorage.getItem('krublz_leaderboard') || '[]'); },
+            addToLeaderboard(entry) {
+                const lb = this.leaderboard;
+                lb.unshift(entry);
+                localStorage.setItem('krublz_leaderboard', JSON.stringify(lb.slice(0, 50)));
+            },
+            get topSpenders() { return JSON.parse(localStorage.getItem('krublz_spenders') || '[]'); },
+            addSpender(name, amount) {
+                const s = this.topSpenders;
+                const existing = s.find(x => x.name === name);
+                if (existing) { existing.total += amount; }
+                else { s.push({ name, total: amount }); }
+                s.sort((a,b) => b.total - a.total);
+                localStorage.setItem('krublz_spenders', JSON.stringify(s.slice(0, 20)));
+            }
+        };
+
+        // Fluctuating exchange rate
+        function fluctuateRate() {
+            const base = 847;
+            const wobble = Math.floor(Math.random() * 200 - 100);
+            document.getElementById('exchangeRate').innerText = (base + wobble).toLocaleString();
+        }
+        setInterval(fluctuateRate, 8000);
+
+        // Init balance display
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('krublzBalance').innerText = KrublzState.balance.toLocaleString();
+        });
+    </script>
+
+    <!-- ₭ PUBLIC LEADERBOARD -->
+    <div class="leaderboard-section">
+        <h2>₭ HALL OF KLOUT — PUBLIC LEADERBOARD ₭</h2>
+        <div class="leaderboard-grid">
+
+            <div class="leaderboard-panel">
+                <h3>💰 TOP OLIGARCHS<br><span>Most Krublz Spent</span></h3>
+                <div id="oligarchList" class="lb-list">
+                    <div class="lb-empty">No oligarchs yet. Be first. Is honour.</div>
+                </div>
+            </div>
+
+            <div class="leaderboard-panel panel-shame">
+                <h3>⚖️ MOST SENTENCED<br><span>Wall of Perpetual Shame</span></h3>
+                <div id="shamefulList" class="lb-list">
+                    <div class="lb-empty">No criminals yet. Submit your enemies.</div>
+                </div>
+            </div>
+
+            <div class="leaderboard-panel">
+                <h3>📜 RECENT VERDICTS<br><span>Live From The Tribunal</span></h3>
+                <div id="recentVerdicts" class="lb-list">
+                    <div class="lb-empty">Tribunal is quiet. For now.</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <style>
+        .leaderboard-section {
+            background: #050505;
+            border-top: 4px solid red;
+            border-bottom: 4px solid red;
+            padding: 30px 20px;
+            margin: 20px 0;
+        }
+        .leaderboard-section h2 {
+            color: red;
+            font-size: 26px;
+            text-shadow: 0 0 15px red, 2px 2px black;
+            margin-bottom: 20px;
+        }
+        .leaderboard-grid {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .leaderboard-panel {
+            background: #0a0a0a;
+            border: 2px solid #333;
+            width: 300px;
+            padding: 15px;
+            text-align: left;
+        }
+        .panel-shame { border-color: red; }
+        .leaderboard-panel h3 {
+            color: gold;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
+        }
+        .leaderboard-panel h3 span {
+            display: block;
+            color: #555;
+            font-size: 10px;
+            letter-spacing: 1px;
+            font-weight: normal;
+        }
+        .lb-list { font-size: 13px; }
+        .lb-empty { color: #333; text-align: center; padding: 20px; font-style: italic; }
+        .lb-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 4px;
+            border-bottom: 1px solid #111;
+            color: #aaa;
+        }
+        .lb-entry:first-child { color: gold; }
+        .lb-entry:nth-child(2) { color: #c0c0c0; }
+        .lb-entry:nth-child(3) { color: #cd7f32; }
+        .lb-rank { color: #444; font-size: 11px; width: 20px; }
+        .lb-name { flex: 1; padding: 0 6px; }
+        .lb-value { color: lime; font-size: 12px; }
+        .lb-badge {
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 2px;
+            margin-left: 4px;
+        }
+        .badge-oligarch { background: gold; color: black; }
+        .badge-dark { background: red; color: yellow; }
+        .badge-repeat { background: #550000; color: red; }
+        .criminal-count {
+            display: inline-block;
+            background: red;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .offender-title {
+            font-size: 9px;
+            color: #ff6600;
+            display: block;
+        }
+    </style>
+
+    <script>
+        const offenderTitles = [
+            '', // 0
+            'Person of Interest',
+            'Known Criminal',
+            'Known Criminal',
+            'Repeat Offender',
+            'Repeat Offender',
+            'Habitual Enemy of Clout',
+            'Habitual Enemy of Clout',
+            'Habitual Enemy of Clout',
+            'Habitual Enemy of Clout',
+        ];
+        function getOffenderTitle(count) {
+            if (count >= 10) return '⚠️ ENEMY OF THE INTERNET';
+            return offenderTitles[count] || 'Person of Interest';
+        }
+
+        function updateLeaderboard() {
+            // Oligarchs
+            const spenders = KrublzState.topSpenders;
+            const oligarchEl = document.getElementById('oligarchList');
+            if (spenders.length === 0) {
+                oligarchEl.innerHTML = '<div class="lb-empty">No oligarchs yet. Be first. Is honour.</div>';
+            } else {
+                oligarchEl.innerHTML = spenders.slice(0,8).map((s,i) => `
+                    <div class="lb-entry">
+                        <span class="lb-rank">#${i+1}</span>
+                        <span class="lb-name">${s.name}${s.total >= 2500 ? '<span class="lb-badge badge-oligarch">OLIGARCH</span>' : ''}${s.total >= 6500 ? '<span class="lb-badge badge-dark">DARK</span>' : ''}</span>
+                        <span class="lb-value">₭${s.total.toLocaleString()}</span>
+                    </div>`).join('');
+            }
+
+            // Most sentenced criminals
+            const criminals = KrublzState.criminals;
+            const criminalArr = Object.entries(criminals)
+                .map(([k,v]) => ({ name: v.displayName || k, count: v.count || 1, title: getOffenderTitle(v.count || 1) }))
+                .sort((a,b) => b.count - a.count);
+
+            const shameEl = document.getElementById('shamefulList');
+            if (criminalArr.length === 0) {
+                shameEl.innerHTML = '<div class="lb-empty">No criminals yet. Submit your enemies.</div>';
+            } else {
+                shameEl.innerHTML = criminalArr.slice(0,8).map((c,i) => `
+                    <div class="lb-entry">
+                        <span class="lb-rank">#${i+1}</span>
+                        <span class="lb-name">${c.name}<span class="offender-title">${c.title}</span></span>
+                        <span class="lb-value"><span class="criminal-count">${c.count}</span></span>
+                    </div>`).join('');
+            }
+
+            // Recent verdicts
+            const verdicts = KrublzState.leaderboard;
+            const recentEl = document.getElementById('recentVerdicts');
+            if (verdicts.length === 0) {
+                recentEl.innerHTML = '<div class="lb-empty">Tribunal is quiet. For now.</div>';
+            } else {
+                recentEl.innerHTML = verdicts.slice(0,8).map(v => `
+                    <div class="lb-entry" style="flex-direction:column;align-items:flex-start;gap:2px;">
+                        <span style="color:#ff6600;font-size:12px;">${v.criminal} — ${v.tier}</span>
+                        <span style="color:#444;font-size:10px;">${v.crime.substring(0,45)}...</span>
+                        <span style="color:#222;font-size:9px;">${v.time}</span>
+                    </div>`).join('');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', updateLeaderboard);
+    </script>
+
+    <!-- ₭ KRUBLZ PURCHASE SECTION -->
+    <div class="krublz-shop">
+        <h2>₭ BUY KRUBLZ — OFFICIAL CURRENCY OF КЛОУТ КЛУБ™ ₭</h2>
+        <p class="krublz-shop-sub">You need Krublz to use Tribunal. Krublz only accepted currency. Cash, dignity, and excuses not accepted.</p>
+        <div class="krublz-packages">
+
+            <div class="krublz-package package-bronze">
+                <div class="pkg-badge">ПРОЛЕТАРИЙ</div>
+                <div class="pkg-amount">₭ 400</div>
+                <div class="pkg-name">WORKER'S BUNDLE</div>
+                <div class="pkg-price">$2.99</div>
+                <div class="pkg-desc">Enough for one People's Tribunal. Is start. Is humble. Like you.</div>
+                <div class="pkg-bonus">+ 50 BONUS KRUBLZ (we feel sorry)</div>
+                <button class="pkg-btn" onclick="buyKrublz(450, 'Workers Bundle', 2.99)">₭ BUY NOW</button>
+            </div>
+
+            <div class="krublz-package package-silver">
+                <div class="pkg-badge">КОМРАД</div>
+                <div class="pkg-amount">₭ 900</div>
+                <div class="pkg-name">KOMRADE BUNDLE</div>
+                <div class="pkg-price">$5.99</div>
+                <div class="pkg-desc">Good for Public Tribunal. Friend will see verdict on internet. Very public. Much shame.</div>
+                <div class="pkg-bonus">+ 150 BONUS KRUBLZ (for loyalty to the Klub)</div>
+                <button class="pkg-btn" onclick="buyKrublz(1050, 'Komrade Bundle', 5.99)">₭ BUY NOW</button>
+            </div>
+
+            <div class="krublz-package package-gold">
+                <div class="pkg-badge">🌟 BEST VALUE 🌟</div>
+                <div class="pkg-amount">₭ 2000</div>
+                <div class="pkg-name">OLIGARCH BUNDLE</div>
+                <div class="pkg-price">$11.99</div>
+                <div class="pkg-desc">For serious enemy destruction. Enough for Supreme Tribunal plus extras. True power move.</div>
+                <div class="pkg-bonus">+ 500 BONUS KRUBLZ + OLIGARCH title on leaderboard</div>
+                <button class="pkg-btn" onclick="buyKrublz(2500, 'Oligarch Bundle', 11.99)">₭ BUY NOW</button>
+            </div>
+
+            <div class="krublz-package package-black">
+                <div class="pkg-badge">💀 ТЁМНЫЙ КОМРАД</div>
+                <div class="pkg-amount">₭ 5000</div>
+                <div class="pkg-name">DARK KOMRADE BUNDLE</div>
+                <div class="pkg-price">$24.99</div>
+                <div class="pkg-desc">For when someone truly deserve maximum destruction. You know who. They know what they did.</div>
+                <div class="pkg-bonus">+ 1500 BONUS KRUBLZ + permanent Dark Komrade badge</div>
+                <button class="pkg-btn pkg-btn-black" onclick="buyKrublz(6500, 'Dark Komrade Bundle', 24.99)">₭ BUY NOW</button>
+            </div>
+
+        </div>
+        <p class="krublz-disclaimer">* Krublz are non-refundable. Krublz expire never (or whenever we decide). Krublz not redeemable for cash, goods, or real clout. By purchasing Krublz you agree to terms we have not written yet.</p>
+    </div>
+
+    <style>
+        .krublz-shop {
+            background: linear-gradient(180deg, #0a0a0a, #1a1000);
+            border: 4px solid gold;
+            border-left: none;
+            border-right: none;
+            padding: 30px 20px;
+            margin: 20px 0;
+            color: gold;
+        }
+        .krublz-shop h2 {
+            font-size: 28px;
+            color: gold;
+            text-shadow: 0 0 20px gold, 2px 2px black;
+            margin-bottom: 5px;
+        }
+        .krublz-shop-sub {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+        .krublz-packages {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .krublz-package {
+            width: 220px;
+            padding: 20px 15px;
+            border-radius: 4px;
+            text-align: center;
+            position: relative;
+            transition: transform 0.2s;
+        }
+        .krublz-package:hover { transform: translateY(-5px); }
+
+        .package-bronze { background: #1a0d00; border: 3px solid #cd7f32; }
+        .package-silver { background: #0d0d1a; border: 3px solid #c0c0c0; }
+        .package-gold   { background: #1a1400; border: 4px solid gold; box-shadow: 0 0 25px rgba(255,215,0,0.4); }
+        .package-black  { background: #0a0000; border: 3px solid #ff0000; box-shadow: 0 0 25px rgba(255,0,0,0.3); }
+
+        .pkg-badge {
+            font-size: 11px;
+            letter-spacing: 2px;
+            padding: 4px 8px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        .package-bronze .pkg-badge { color: #cd7f32; border: 1px solid #cd7f32; }
+        .package-silver .pkg-badge { color: #c0c0c0; border: 1px solid #c0c0c0; }
+        .package-gold .pkg-badge   { color: gold; border: 1px solid gold; font-size: 13px; }
+        .package-black .pkg-badge  { color: red; border: 1px solid red; }
+
+        .pkg-amount {
+            font-size: 36px;
+            font-weight: bold;
+            color: lime;
+            text-shadow: 0 0 10px lime;
+        }
+        .pkg-name { font-size: 13px; letter-spacing: 2px; margin: 5px 0; color: #aaa; }
+        .pkg-price { font-size: 28px; font-weight: bold; color: gold; margin: 8px 0; }
+        .pkg-desc { font-size: 12px; color: #888; font-weight: normal; margin: 8px 0; line-height: 1.4; }
+        .pkg-bonus { font-size: 11px; color: lime; margin: 8px 0; }
+
+        .pkg-btn {
+            background: gold;
+            color: black;
+            border: 2px solid black;
+            padding: 10px 20px;
+            font-family: "Comic Sans MS", sans-serif;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            animation: buttonColorShift 2s infinite alternate;
+        }
+        .pkg-btn:hover { background: yellow; box-shadow: 0 0 15px gold; }
+        .pkg-btn-black {
+            background: red !important;
+            color: yellow !important;
+            animation: redPulse 1s infinite alternate !important;
+        }
+        @keyframes redPulse {
+            from { box-shadow: 0 0 5px red; }
+            to { box-shadow: 0 0 25px red; }
+        }
+        .krublz-disclaimer {
+            color: #333;
+            font-size: 10px;
+            margin-top: 20px;
+            font-weight: normal;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+
+    <script>
+        function buyKrublz(amount, packageName, price) {
+            // Fake purchase flow - in production wire to Stripe/PayPal
+            const buyerName = prompt(`₭ PURCHASING: ${packageName}\n₭ PRICE: $${price}\n\nEnter your KOMRADE NAME for leaderboard (or press cancel):`);
+            if (buyerName === null) return;
+
+            const name = buyerName.trim() || 'Anonymous Komrade';
+
+            // Simulate payment
+            const confirmed = confirm(`CONFIRM PURCHASE:\n\n${packageName}\n$${price} → ${amount.toLocaleString()} KRUBLZ\n\nKomrade Name: ${name}\n\n(In production this would open payment. For now, we trust you. Big mistake probably.)`);
+
+            if (confirmed) {
+                KrublzState.balance = KrublzState.balance + amount;
+                KrublzState.addSpender(name, amount);
+
+                // Flash balance
+                const balEl = document.getElementById('krublzBalance');
+                balEl.style.color = 'lime';
+                balEl.style.fontSize = '20px';
+                setTimeout(() => { balEl.style.color = ''; balEl.style.fontSize = ''; }, 2000);
+
+                alert(`✅ ПОКУПКА УСПЕШНА!\n\n+${amount.toLocaleString()} KRUBLZ added to your balance!\n\nWelcome, ${name}. The Tribunal awaits your enemies.`);
+                updateLeaderboard();
+            }
+        }
+    </script>
+
+        <!-- TOP ADS ROW: passive-aggressive placeholders + real ads mixed -->
+    <div class="ads-container">
+        <div class="ad-box ad-placeholder">
+            <div class="ad-ph-inner">
+                <div class="ad-ph-title">AD SPACE</div>
+                <div class="ad-ph-sub">No advertiser want this spot.<br>We understand. We also not want us.</div>
+            </div>
+        </div>
+        <a href="#"><div class="ad-box"><img src="ad2.png" alt="Ad"></div></a>
+        <div class="ad-box ad-placeholder">
+            <div class="ad-ph-inner">
+                <div class="ad-ph-title">ADVERTISEMENT</div>
+                <div class="ad-ph-sub">Advertiser look at site.<br>Advertiser say "no thank you."<br>We respect decision. (We cry.)</div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .ads-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 0 20px;
+        }
+        .ad-box {
+            width: 300px;
+            height: 250px;
+            background: black;
+            border: 5px solid white;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease-in-out;
+        }
+        .ad-box img { width: 100%; height: 100%; object-fit: cover; }
+        .ad-box:hover { transform: scale(1.05); }
+        .ad-placeholder { border-color: #222; border-style: dashed; }
+        .ad-ph-inner { padding: 20px; text-align: center; }
+        .ad-ph-title {
+            color: #333;
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            border: 1px solid #222;
+            padding: 4px 8px;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+        .ad-ph-sub { color: #2a2a2a; font-size: 13px; font-weight: normal; line-height: 1.6; }
+        @keyframes buttonColorShift {
+            0% { background-color: yellow; }
+            50% { background-color: orange; }
+            100% { background-color: yellow; }
+        }
+        @keyframes flickerEffect {
+            0% { box-shadow: 0 0 5px red; }
+            50% { box-shadow: 0 0 20px yellow; }
+            100% { box-shadow: 0 0 5px red; }
+        }
+        .cta-button {
+            color: black;
+            padding: 10px 20px;
+            font-size: 25px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 20px;
+            font-weight: bold;
+            animation: buttonColorShift 2s infinite alternate;
+            transition: all 0.1s ease-in-out;
+            border: 4px solid cyan;
+            text-decoration: none;
+        }
+        .cta-button:hover { background-color: gold; box-shadow: 0px 0px 20px cyan; }
+    </style>
+
+    <!-- HERO: SENTENCE YOUR ENEMIES -->
+    <div class="hero-section">
+        <h2>&#x2696;&#xfe0f; SENTENCE UP TO 1,000,000 ENEMIES &#x2696;&#xfe0f;</h2>
+        <p class="hero-sub">Someone in your life deserve public humiliation?<br>Submit them to Official Tribunal today. Verdict guaranteed (probably). Shame is permanent.</p>
+        <div class="hero-stats">
+            <div class="hstat"><span class="hstat-num">47,291</span><span class="hstat-label">Criminals Sentenced</span></div>
+            <div class="hstat"><span class="hstat-num">&#x20ad; 2.4M</span><span class="hstat-label">Krublz in Circulation</span></div>
+            <div class="hstat"><span class="hstat-num">99.3%</span><span class="hstat-label">Verdict Accuracy (self-reported)</span></div>
+        </div>
+        <a href="#tribunal" class="cta-button">&#x2696;&#xfe0f; GO TO TRIBUNAL NOW</a>
+        <p class="hero-disclaimer">*Numbers are real. Maybe. Statistics department currently under investigation.</p>
+    </div>
+    <style>
+        .hero-section {
+            border: 5px solid red;
+            padding: 30px 20px;
+            margin: 20px auto;
+            width: 80%;
+            background: linear-gradient(180deg, #0a0000, #000);
+            animation: flickerEffect 2s infinite alternate;
+        }
+        .hero-section h2 { font-size: 32px; color: red; text-shadow: 2px 2px black, 0 0 20px red; margin-bottom: 10px; }
+        .hero-sub { color: #888; font-size: 15px; font-weight: normal; margin-bottom: 20px; line-height: 1.6; }
+        .hero-stats { display: flex; justify-content: center; gap: 40px; margin: 20px 0; flex-wrap: wrap; }
+        .hstat { text-align: center; }
+        .hstat-num { display: block; font-size: 28px; color: lime; font-weight: bold; text-shadow: 0 0 10px lime; }
+        .hstat-label { display: block; font-size: 11px; color: #444; letter-spacing: 1px; margin-top: 3px; }
+        .hero-disclaimer { color: #222; font-size: 10px; font-weight: normal; margin-top: 12px; }
+    </style>
+
+    <!-- PASSIVE AGGRESSIVE BANNER AD -->
+    <div style="width:90%;margin:10px auto;">
+        <div style="background:#0a0a0a;border:2px dashed #1a1a1a;color:#222;padding:18px;font-size:14px;text-align:center;font-weight:normal;">
+            &#x1f4e2; &nbsp; BANNER AD SPACE &mdash; <span style="color:#1a1a1a">Advertiser review site. Advertiser leave immediately. We not blame them.</span> &nbsp; &#x1f4e2;
+        </div>
+    </div>
+
+    <!-- WHAT WE DO: REWRITTEN FOR TRIBUNAL -->
+    <div class="services-container">
+        <h2>&#x2696;&#xfe0f; WHAT WE DO? (IS JUSTICE BUSINESS) &#x2696;&#xfe0f;</h2>
+        <p class="service-text">&#x2696;&#xfe0f; "You have enemy. We have Tribunal. You pay Krublz. Enemy get sentenced. Simple transaction, no?"</p>
+        <p class="service-text">&#x1f4dc; "Official AI verdict generated by real judge (is AI, but very official-sounding AI). Comrade Kloutsky not take bribe. Well. He take Krublz."</p>
+        <p class="service-text">&#x1f310; "Upper tier verdict posted to internet for all world to see. Criminal cannot escape. Internet is forever. So is shame."</p>
+        <p class="service-text">&#x1f4c8; "More people sentence same criminal = criminal rank go up on leaderboard. Coordinate with friend for maximum devastation."</p>
+        <p class="service-text">&#x1f3c6; "You, the Prosecutor, get credit on Oligarch board. Show friends you spend most Krublz. Is new status symbol."</p>
+        <a href="#tribunal" class="cta-button">&#x2696;&#xfe0f; BEGIN TRIBUNAL NOW</a>
+    </div>
+    <style>
+        .services-container {
+            background: red; color: yellow; padding: 25px 20px; font-size: 20px; font-weight: bold;
+            text-align: center; border: 5px solid white; margin: 20px auto; width: 80%;
+            box-shadow: 0px 0px 20px cyan; animation: flickerEffect 1.5s infinite alternate;
+        }
+        .service-text { font-size: 18px; font-weight: bold; text-shadow: 2px 2px black; margin-bottom: 12px; color: lime; line-height: 1.5; }
+    </style>
+
+    <!-- THREE SERVICE CARDS: REWRITTEN -->
+    <div style="display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin:15px auto;max-width:1000px;padding:0 20px;">
+        <div style="background:linear-gradient(to bottom,#1a0000,#000);border:4px dashed red;padding:25px 20px;flex:1;min-width:240px;border-radius:8px;text-align:center;">
+            <h3 style="color:gold;font-size:18px;margin-bottom:10px;">&#x1f4dc; Official AI Verdict</h3>
+            <p style="color:#888;font-size:14px;font-weight:normal;line-height:1.5;">Real judge (AI). Real sentence (fake). Real shame (permanent). Not traceable to us.</p>
+        </div>
+        <div style="background:linear-gradient(to bottom,#1a0000,#000);border:4px dashed red;padding:25px 20px;flex:1;min-width:240px;border-radius:8px;text-align:center;">
+            <h3 style="color:gold;font-size:18px;margin-bottom:10px;">&#x1f310; Public Internet Posting</h3>
+            <p style="color:#888;font-size:14px;font-weight:normal;line-height:1.5;">Upper tiers get tweeted. Criminal tagged. Photo attached. Internet never forgets. Neither do we.</p>
+        </div>
+        <div style="background:linear-gradient(to bottom,#1a0000,#000);border:4px dashed red;padding:25px 20px;flex:1;min-width:240px;border-radius:8px;text-align:center;">
+            <h3 style="color:gold;font-size:18px;margin-bottom:10px;">&#x1f4ca; Criminal Record System</h3>
+            <p style="color:#888;font-size:14px;font-weight:normal;line-height:1.5;">Each conviction stacks publicly. 10+ sentences = ENEMY OF INTERNET status. Very prestigious. For us.</p>
+        </div>
+    </div>
+
+    <!-- PASSIVE AGGRESSIVE AD ROW 2 -->
+    <div style="display:flex;justify-content:space-around;margin:20px;flex-wrap:wrap;gap:10px;">
+        <div class="ad-box ad-placeholder" style="width:280px;height:200px;">
+            <div class="ad-ph-inner">
+                <div class="ad-ph-title">AD COMING SOON</div>
+                <div class="ad-ph-sub">Advertiser under investigation.<br>By us.<br>In the Tribunal.</div>
+            </div>
+        </div>
+        <a href="#"><div class="ad-box" style="width:280px;height:200px;"><img src="ad1.png" alt="Ad"></div></a>
+        <div class="ad-box ad-placeholder" style="width:280px;height:200px;">
+            <div class="ad-ph-inner">
+                <div class="ad-ph-title">PREMIUM AD SPACE</div>
+                <div class="ad-ph-sub">"Premium" mean we ask more money.<br>Result is same empty box.<br>Is honest, at least.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRUSTED COMPANY: UPDATED -->
+    <div style="border:5px solid red;padding:25px;margin:20px auto;width:80%;text-align:center;">
+        <h2 style="color:red;">&#x26a0;&#xfe0f; TRUSTED COMPANY 5000% REAL &#x26a0;&#xfe0f;</h2>
+        <p style="color:#888;font-weight:normal;font-size:14px;">Real review from real person (name available upon request, which we will deny):</p>
+        <p style="font-style:italic;color:lime;font-size:16px;">"I sentence my coworker for using speakerphone in open office. Verdict say he is WINDOWS VISTA TIER. I show whole office. He now sit in corner. Thank you &#x041a;&#x043b;&#x043e;&#x0443;&#x0442; &#x041a;&#x043b;&#x0443;&#x0431;." &mdash; &#x0420;&#x0435;&#x0430;&#x043b;&#x044c;&#x043d;&#x044b;&#x0439; &#x0427;&#x0435;&#x043b;&#x043e;&#x0432;&#x0435;&#x043a;, Ohio</p>
+        <a href="#tribunal" class="cta-button">&#x2696;&#xfe0f; SENTENCE YOUR COWORKER TOO</a>
+    </div>
+
+<div class="reviews-bar">
+        <div class="reviews">
+            <span>⭐ "Friend say is real. Wallet say different." - Иван ⭐</span>
+            <span>⭐ "Bro this is scam but it kinda work?" - Дмитрий ⭐</span>
+            <span>⭐ "Before Klout Club, I was nobody. Now, I am nobody with a blue checkmark!" - Алексей ⭐</span>
+            <span>⭐ "J'ai acheté 5000 abonnés. Maintenant je suis célèbre en Ouzbékistan." - Pierre ⭐</span>
+            <span>⭐ "Mamá dice que es una estafa. Ahora tengo 10,000 seguidores. ¿Quién gana?" - Carlos ⭐</span>
+            <span>⭐ "Is not scam, my cousin say he use and now have Lambo." - Иван ⭐</span>
+            <span>⭐ "Very much clout! Now my ex-wife respect!" - Дмитрий 'Big Rubles' ⭐</span>
+            <span>⭐ "I paid 3 times and get 1 service, is good deal? Maybe." - Алексей ⭐</span>
+            <span>⭐ "Before I was nobody, now I am also nobody but with followers!" - Юрий ⭐</span>
+        </div>
+    </div>
+    
+    <style>
+        .reviews-bar {
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            background: black;
+            color: yellow;
+            padding: 10px 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .reviews {
+            display: inline-block;
+            animation: scrollReviews 20s linear infinite;
+        }
+        @keyframes scrollReviews {
+            from { transform: translateX(100%); }
+            to { transform: translateX(-100%); }
+        }
+    </style>
+    
+
+
+
+
+<!-- ⚖️ THREE-TIER TRIBUNAL ⚖️ -->
+<div class="tribunal-outer">
+    <h2>⚖️ ОФИЦИАЛЬНЫЙ ТРИБУНАЛ КЛОУТА ⚖️</h2>
+    <p class="tribunal-intro">Someone commit Crime Against Clout? Submit them for OFFICIAL JUDGMENT.<br>More Krublz = more public shame. Is simple math. Is justice.</p>
+
+    <!-- TIER SELECTOR -->
+    <div class="tier-selector">
+
+        <div class="tier-card tier-peoples" onclick="selectTier('peoples')">
+            <div class="tier-crown">🥉</div>
+            <div class="tier-name">НАРОДНЫЙ ТРИБУНАЛ</div>
+            <div class="tier-english">People's Tribunal</div>
+            <div class="tier-cost">₭ 300 KRUBLZ</div>
+            <div class="tier-features">
+                <div class="tf">✅ AI-generated verdict</div>
+                <div class="tf">✅ Wall of Shame listing</div>
+                <div class="tf">✅ Criminal record started</div>
+                <div class="tf red">❌ No public tweet</div>
+                <div class="tf red">❌ No photo upload</div>
+            </div>
+            <div class="tier-select-btn" id="btn-peoples">SELECT THIS TRIBUNAL</div>
+        </div>
+
+        <div class="tier-card tier-public active-tier" onclick="selectTier('public')">
+            <div class="tier-crown">🥈</div>
+            <div class="tier-popular">⭐ MOST POPULAR ⭐</div>
+            <div class="tier-name">ПУБЛИЧНЫЙ ТРИБУНАЛ</div>
+            <div class="tier-english">Public Tribunal</div>
+            <div class="tier-cost">₭ 700 KRUBLZ</div>
+            <div class="tier-features">
+                <div class="tf">✅ Full elaborate verdict</div>
+                <div class="tf">✅ Wall of Shame listing</div>
+                <div class="tf">✅ Criminal record updated</div>
+                <div class="tf">✅ Auto-tweet with verdict</div>
+                <div class="tf">✅ Photo of accused</div>
+                <div class="tf red">❌ No permanent page</div>
+            </div>
+            <div class="tier-select-btn selected-btn" id="btn-public">✅ SELECTED</div>
+        </div>
+
+        <div class="tier-card tier-supreme" onclick="selectTier('supreme')">
+            <div class="tier-crown">🥇</div>
+            <div class="tier-name">ВЕРХОВНЫЙ ТРИБУНАЛ</div>
+            <div class="tier-english">Supreme Komrade Tribunal</div>
+            <div class="tier-cost">₭ 1300 KRUBLZ</div>
+            <div class="tier-features">
+                <div class="tf">✅ Full show trial + witnesses</div>
+                <div class="tf">✅ Permanent criminal page</div>
+                <div class="tf">✅ Criminal record updated</div>
+                <div class="tf">✅ Auto-tweet + follow-up tweet</div>
+                <div class="tf">✅ Photo featured prominently</div>
+                <div class="tf">✅ Leaderboard highlighted</div>
+                <div class="tf">✅ Prosecutor badge for you</div>
+            </div>
+            <div class="tier-select-btn" id="btn-supreme">SELECT THIS TRIBUNAL</div>
+        </div>
+
+    </div>
+
+    <!-- TRIBUNAL FORM -->
+    <div class="tribunal-form-box" id="tribunalForm">
+        <div class="selected-tier-display">
+            SELECTED: <span id="selectedTierName">ПУБЛИЧНЫЙ ТРИБУНАЛ</span> — <span id="selectedTierCost">₭ 700</span> &nbsp;|&nbsp; YOUR BALANCE: <span id="formBalance">0</span> KRUBLZ
+        </div>
+
+        <div class="tform-row">
+            <label>🪪 FULL NAME OF CRIMINAL (as known to public):</label>
+            <input type="text" id="criminalName" placeholder="e.g. Chad, Karen, Mr. Henderson the PE teacher..." maxlength="50">
+        </div>
+
+        <div class="tform-row" id="twitterRow">
+            <label>🐦 THEIR TWITTER/X HANDLE (for public tagging — upper tiers only):</label>
+            <input type="text" id="criminalTwitter" placeholder="@theirhandle (optional but devastating)">
+        </div>
+
+        <div class="tform-row" id="photoRow">
+            <label>📸 PHOTO OF THE ACCUSED (for maximum public shame — upper tiers only):</label>
+            <input type="file" id="criminalPhoto" accept="image/*">
+            <div class="photo-preview" id="photoPreview" style="display:none;">
+                <img id="photoImg" src="" alt="Accused" style="max-width:150px;max-height:150px;border:3px solid red;">
+                <div style="font-size:11px;color:#555;margin-top:4px;">Photo will be attached to tweet and verdict</div>
+            </div>
+        </div>
+
+        <div class="tform-row">
+            <label>🚨 THEIR CRIME AGAINST CLOUT:</label>
+            <select id="crimeSelect" onchange="crimeChanged()">
+                <optgroup label="--- SOCIAL MEDIA CRIMES ---">
+                <option value="posting gym selfies with no visible gains">&#x1f4f8; Posting gym selfies with no gains</option>
+                <option value="using 47 hashtags on every single post">&#x1f3f7;&#xfe0f; Using 47 hashtags on every post</option>
+                <option value="filming themselves crying for social media engagement">&#x1f62d; Filming themselves crying for engagement</option>
+                <option value="posting a vague 'I need a break' message then posting again 20 minutes later">&#x1f6ab; Posting 'I need a break' then posting again in 20 minutes</option>
+                <option value="only posting photos from one good angle for 3 years straight">&#x1f4d0; Same exact angle in every photo for 3 years</option>
+                <option value="writing 'I don't really use social media' on their social media">&#x1f4f5; Writing 'I don't use social media' ON social media</option>
+                <option value="posting 'no context' photos that are clearly extremely calculated">&#x1f3ad; 'No context' posts that are obviously very calculated</option>
+                <option value="having a ring light but nothing worth filming">&#x1f4a1; Owning ring light with nothing to film</option>
+                <option value="subtweeting someone who can obviously tell it is about them">&#x1f440; Subtweeting someone who can 100% tell it is about them</option>
+                <option value="announcing they are 'taking a social media break' every three weeks">&#x1f4e3; Announcing 'social media break' every three weeks</option>
+                <option value="posting 'swipe for the important message' but slide 2 is just more selfies">&#x27a1;&#xfe0f; 'Swipe for important message' but it's just more selfies</option>
+                </optgroup>
+                <optgroup label="--- PERSONALITY CRIMES ---">
+                <option value="having a LinkedIn that describes them as a thought leader and visionary">&#x1f4bc; Calling themselves a 'thought leader and visionary' on LinkedIn</option>
+                <option value="starting every sentence with 'as an empath'">&#x1f9ff; Starting sentences with 'as an empath'</option>
+                <option value="putting their Hogwarts house in their bio in 2026">&#x1f9d9; Hogwarts house in bio (still, in 2026)</option>
+                <option value="having 'dog mom' or 'girl dad' or 'boy dad' in their social media bio">&#x1f436; 'Dog mom' or 'girl dad' in the bio</option>
+                <option value="describing themselves as 'brutally honest' but cannot handle any feedback">&#x1f4a3; Claims to be 'brutally honest' but cannot handle feedback</option>
+                <option value="going to Europe for 2 weeks and never shutting up about it for the next 3 years">&#x2708;&#xfe0f; Went to Europe once and brings it up constantly</option>
+                <option value="saying 'I'm not like other people' in complete seriousness">&#x1f914; Saying 'I'm not like other people' unironically</option>
+                <option value="calling themselves a walking red flag as if it is a personality">&#x1f6a9; 'Walking red flag' as personality trait</option>
+                <option value="identifying as a Scorpio as an explanation for all bad behavior">&#x264f; Using star sign to excuse all bad behavior</option>
+                <option value="having 'fluent in sarcasm' in their bio">&#x1f644; 'Fluent in sarcasm' in bio</option>
+                <option value="describing every minor inconvenience as 'trauma'">&#x1f915; Calling every minor inconvenience 'trauma'</option>
+                <option value="claiming to be an introvert to avoid all social responsibility">&#x1f9b4; Using 'introvert' as excuse for everything</option>
+                </optgroup>
+                <optgroup label="--- COMMUNICATION CRIMES ---">
+                <option value="replying only 'haha' to every single message for years">&#x1f610; Replying only 'haha' to everything, always</option>
+                <option value="sending unsolicited voice messages over 4 minutes long">&#x1f3a4; Sending 4-minute unsolicited voice messages</option>
+                <option value="leaving people on read then asking 'why are you quiet?'">&#x1f4ec; Left on read, then asking 'why are you quiet?'</option>
+                <option value="sending good morning texts to group chats nobody asked to be in">&#x2600;&#xfe0f; Unprompted good morning group chat texts</option>
+                <option value="typing 'k' in response to long heartfelt messages">&#x1f5f2;&#xfe0f; Responding 'k' to heartfelt messages</option>
+                <option value="using corporate speak in casual conversation like 'let's circle back' and 'per my last email'">&#x1f4ca; Using 'circle back' and 'per my last email' in real life</option>
+                <option value="putting their pronouns in their email signature but nothing else">&#x1f4e7; Pronouns in email signature, nothing else notable</option>
+                <option value="responding to every story with a one-word reaction instead of actually engaging">&#x1f44d; Responding to stories with single emoji, nothing else</option>
+                </optgroup>
+                <optgroup label="--- LIFESTYLE CRIMES ---">
+                <option value="having a podcast with 3 listeners, one of whom is their mom">&#x1f399;&#xfe0f; Podcast with 3 listeners (one is mom)</option>
+                <option value="posting charity donation receipts publicly for clout">&#x1f9fe; Posting charity donation receipts for attention</option>
+                <option value="posting motivational quotes over blurry sunset photos">&#x1f305; Motivational quotes over sunset photos</option>
+                <option value="saying 'we' about their sports team as if they play for them">&#x1f3c8; Saying 'we' about sports team as if they play</option>
+                <option value="gatekeeping their skincare routine like it is classified information">&#x1f9f4; Gatekeeping skincare routine like state secret</option>
+                <option value="ordering the most complicated coffee order possible and saying it slowly">&#x2615; Ordering complicated coffee very slowly and deliberately</option>
+                <option value="being loudly offended by everything but claiming they have no ego">&#x1f621; Offended by everything, claims to have no ego</option>
+                <option value="going plant-based for 2 weeks and never shutting up about it">&#x1f331; Plant-based for 2 weeks, never shuts up about it</option>
+                <option value="treating their pet like a human child at every social event">&#x1f43e; Treating pet like human child at all social events</option>
+                <option value="pretending to not own a TV while owning a TV">&#x1f4fa; Claiming to not own TV while owning TV</option>
+                </optgroup>
+                <optgroup label="--- WORKPLACE CRIMES ---">
+                <option value="sending emails that could have been a text">&#x1f4e9; Sending emails that should have been a text</option>
+                <option value="replying-all to mass emails to say 'thanks'">&#x1f4e8; Replying-all to say only 'Thanks!'</option>
+                <option value="scheduling meetings to discuss the upcoming meeting">&#x1f4c5; Scheduling meeting to discuss a future meeting</option>
+                <option value="putting their work title in their personal social media bio">&#x1f4cb; Work title in personal social media bio</option>
+                <option value="saying 'I'm a workaholic' like it's a compliment">&#x23f0; Bragging about being a workaholic</option>
+                <option value="using speakerphone in an open office without headphones">&#x1f4de; Speakerphone in open office. No headphones.</option>
+                <option value="microwaving fish in the office kitchen">&#x1f41f; Microwaving fish in office kitchen</option>
+                <option value="describing entry-level tasks as 'passion projects'">&#x1f525; Calling entry-level tasks 'passion projects'</option>
+                </optgroup>
+                <optgroup label="--- RELATIONSHIP CRIMES ---">
+                <option value="posting 'he's mine' possessive captions over normal couple photos">&#x1f48f; Posting 'he's mine' over normal couple photos</option>
+                <option value="subtly bringing up their ex in every conversation">&#x1f480; Bringing up ex in every single conversation</option>
+                <option value="trauma bonding on a first date">&#x1f635; Trauma dumping on first date</option>
+                <option value="taking 9 hours to respond then immediately asking 'why do you seem upset'">&#x231b; 9-hour response time, then asking 'why are you upset?'</option>
+                <option value="saying 'I'm an open book' then revealing absolutely nothing">&#x1f4d6; Claims to be 'open book' but reveals nothing</option>
+                </optgroup>
+            </select>
+        </div>
+
+        <div class="tform-row">
+            <label>⚡ SEVERITY OF OFFENSE:</label>
+            <select id="severitySelect">
+                <option value="Minor Clout Infraction — they are annoying but technically survivable">🟡 Minor — Annoying but survivable</option>
+                <option value="Moderate Clout Crime — embarrassing for everyone in a 10-foot radius">🟠 Moderate — Embarrassing for all involved</option>
+                <option value="Severe Clout Felony — they are beyond saving and everyone knows it">🔴 Severe — Beyond saving</option>
+                <option value="MAXIMUM CLOUT TREASON — they should not have internet access and possibly should not be outside">💀 MAXIMUM TREASON — No internet privileges</option>
+            </select>
+        </div>
+
+        <div class="tform-row">
+            <label>🧑‍⚖️ YOUR KOMRADE NAME (for leaderboard):</label>
+            <input type="text" id="prosecutorName" placeholder="Your name as Prosecutor of Record..." maxlength="30">
+        </div>
+
+        <button class="tribunal-submit-btn" id="tribunalSubmitBtn" onclick="conductTribunal()" onmouseenter="startAnthem()" onmouseleave="stopAnthem()">
+            ⚖️ SUBMIT TO <span id="tribunalWord">TRIBUNAL</span> ⚖️
+        </button>
+
+        <style>
+            @keyframes tribunalShake {
+                0%,100% { transform: translateX(0) rotate(0deg); color: yellow; }
+                20% { transform: translateX(-4px) rotate(-2deg); color: red; }
+                40% { transform: translateX(4px) rotate(2deg); color: #ff4400; }
+                60% { transform: translateX(-3px) rotate(-1deg); color: red; }
+                80% { transform: translateX(3px) rotate(1deg); color: #ff6600; }
+            }
+            #tribunalWord {
+                display: inline-block;
+                transition: color 0.3s;
+            }
+            #tribunalWord.shaking {
+                animation: tribunalShake 0.3s infinite;
+                color: red;
+                text-shadow: 0 0 15px red, 0 0 30px red;
+            }
+        </style>
+
+        <script>
+            let anthemCtx = null;
+            let anthemNodes = [];
+            let anthemGain = null;
+            let anthemInterval = null;
+            let shakeTimeout = null;
+
+            function startAnthem() {
+                // Start word shaking after short delay
+                shakeTimeout = setTimeout(() => {
+                    document.getElementById('tribunalWord').classList.add('shaking');
+                }, 200);
+
+                if (anthemCtx) return; // already playing
+
+                try {
+                    anthemCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    anthemGain = anthemCtx.createGain();
+                    anthemGain.gain.setValueAtTime(0.001, anthemCtx.currentTime);
+                    anthemGain.connect(anthemCtx.destination);
+
+                    // Soviet anthem approximation - dramatic brass notes
+                    // Key of Eb major, the anthem melody opening
+                    const anthemNotes = [
+                        // Eb4, Eb4, Eb4, Bb3 - dramatic opening
+                        {freq: 311.13, dur: 0.5, delay: 0},
+                        {freq: 311.13, dur: 0.5, delay: 0.55},
+                        {freq: 311.13, dur: 0.5, delay: 1.1},
+                        {freq: 233.08, dur: 0.3, delay: 1.65},
+                        // Eb4, F4, G4 - rising
+                        {freq: 311.13, dur: 0.4, delay: 2.0},
+                        {freq: 349.23, dur: 0.4, delay: 2.45},
+                        {freq: 392.00, dur: 0.8, delay: 2.9},
+                        // Ab4, G4, F4 descent
+                        {freq: 415.30, dur: 0.4, delay: 3.75},
+                        {freq: 392.00, dur: 0.3, delay: 4.2},
+                        {freq: 349.23, dur: 0.3, delay: 4.55},
+                        // Eb4 resolution
+                        {freq: 311.13, dur: 1.0, delay: 4.9},
+                        // Second phrase
+                        {freq: 233.08, dur: 0.4, delay: 6.1},
+                        {freq: 261.63, dur: 0.4, delay: 6.55},
+                        {freq: 311.13, dur: 0.5, delay: 7.0},
+                        {freq: 349.23, dur: 0.5, delay: 7.55},
+                        {freq: 392.00, dur: 1.2, delay: 8.1},
+                    ];
+
+                    anthemNodes = [];
+
+                    anthemNotes.forEach(note => {
+                        // Main brass oscillator
+                        const osc = anthemCtx.createOscillator();
+                        const noteGain = anthemCtx.createGain();
+                        const osc2 = anthemCtx.createOscillator(); // harmony
+                        const noteGain2 = anthemCtx.createGain();
+
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(note.freq, anthemCtx.currentTime);
+                        osc2.type = 'square';
+                        osc2.frequency.setValueAtTime(note.freq * 1.498, anthemCtx.currentTime); // fifth above
+
+                        const startT = anthemCtx.currentTime + note.delay;
+                        const endT = startT + note.dur;
+
+                        noteGain.gain.setValueAtTime(0, startT);
+                        noteGain.gain.linearRampToValueAtTime(0.4, startT + 0.05);
+                        noteGain.gain.linearRampToValueAtTime(0.3, endT - 0.05);
+                        noteGain.gain.linearRampToValueAtTime(0, endT);
+
+                        noteGain2.gain.setValueAtTime(0, startT);
+                        noteGain2.gain.linearRampToValueAtTime(0.15, startT + 0.05);
+                        noteGain2.gain.linearRampToValueAtTime(0, endT);
+
+                        osc.connect(noteGain);
+                        noteGain.connect(anthemGain);
+                        osc2.connect(noteGain2);
+                        noteGain2.connect(anthemGain);
+
+                        osc.start(startT);
+                        osc.stop(endT + 0.1);
+                        osc2.start(startT);
+                        osc2.stop(endT + 0.1);
+
+                        anthemNodes.push(osc, osc2);
+                    });
+
+                    // Gradually swell volume
+                    anthemGain.gain.setValueAtTime(0.001, anthemCtx.currentTime);
+                    anthemGain.gain.exponentialRampToValueAtTime(0.08, anthemCtx.currentTime + 2);
+                    anthemGain.gain.exponentialRampToValueAtTime(0.4, anthemCtx.currentTime + 5);
+                    anthemGain.gain.exponentialRampToValueAtTime(0.8, anthemCtx.currentTime + 8);
+
+                } catch(e) {
+                    console.log('Audio not available:', e);
+                }
+            }
+
+            function stopAnthem() {
+                document.getElementById('tribunalWord').classList.remove('shaking');
+                if (shakeTimeout) clearTimeout(shakeTimeout);
+
+                if (anthemCtx) {
+                    anthemGain.gain.cancelScheduledValues(anthemCtx.currentTime);
+                    anthemGain.gain.setValueAtTime(anthemGain.gain.value, anthemCtx.currentTime);
+                    anthemGain.gain.linearRampToValueAtTime(0.001, anthemCtx.currentTime + 0.5);
+                    setTimeout(() => {
+                        try { anthemCtx.close(); } catch(e) {}
+                        anthemCtx = null;
+                        anthemNodes = [];
+                    }, 600);
+                }
+            }
+
+        // ===== CHAT WIDGET REACTIONS =====
+        const tribunalHypeMessages = [
+            "🔴 [Support] OH!!! They hover button!!! JUSTICE IS NEAR!!!",
+            "🔴 [Support] YES YES YES click it!!! Comrade Kloutsky is READY!!!",
+            "🔴 [Support] WE SEE YOU HOVERING!!! DO IT!!! DO IT NOW!!!",
+            "🔴 [Support] Criminal will not escape!!! PRESS THE BUTTON KOMRADE!!!",
+            "🔴 [Support] TRIBUNAL TRIBUNAL TRIBUNAL!!! This is best moment!!!",
+            "🔴 [Support] I am shaking!!! So exciting!!! SUBMIT!!!",
+            "🔴 [Support] Comrade Kloutsky put on judge robe right now!!! CLICK!!!",
+            "🔴 [Support] The gavel is READY!!! We have been waiting all day for this!!!",
+            "🔴 [Support] PRESS ITTTTTT!!! Justice cannot wait!!!",
+        ];
+        const tribunalPassiveMessages = [
+            "🔵 [Support] Oh. You move away. Interesting choice.",
+            "🔵 [Support] So criminal just... walk free? Fine. Is fine.",
+            "🔵 [Support] Comrade Kloutsky remove judge robe. Very sad.",
+            "🔵 [Support] Maybe you not serious about justice. Is ok. Not everyone is.",
+            "🔵 [Support] The gavel remain unused. We weep quietly.",
+            "🔵 [Support] Criminal is laughing right now. Just so you know.",
+            "🔵 [Support] We had everything ready. Verdict prepared. You just... leave.",
+            "🔵 [Support] Maybe next time you will have courage. Maybe.",
+        ];
+        const crimeChangedMessages = [
+            "🔵 [Support] Ohhh THAT crime. Very serious. Very bad. Submit immediately.",
+            "🔵 [Support] We have seen this crime before. It never end well for criminal.",
+            "🔵 [Support] Comrade Kloutsky has strong opinion about this particular offense.",
+            "🔵 [Support] This crime... is personal for us. Submit them.",
+            "🔵 [Support] YES. This is exactly why Tribunal exist. Do it.",
+        ];
+
+        let chatHypeInterval = null;
+        let chatHypeCount = 0;
+
+        function injectChatMessage(msg, urgent) {
+            const chatBox = document.getElementById('chatMessages');
+            if (!chatBox) return;
+            const el = document.createElement('div');
+            el.classList.add('chat-message');
+            if (urgent) {
+                el.style.background = 'rgba(255,50,0,0.4)';
+                el.style.border = '1px solid red';
+                el.style.fontWeight = 'bold';
+            }
+            el.innerText = msg;
+            chatBox.appendChild(el);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function startChatHype() {
+            chatHypeCount = 0;
+            if (chatHypeInterval) clearInterval(chatHypeInterval);
+            // First message immediately
+            injectChatMessage(tribunalHypeMessages[Math.floor(Math.random() * tribunalHypeMessages.length)], true);
+            chatHypeInterval = setInterval(() => {
+                chatHypeCount++;
+                if (chatHypeCount < 4) {
+                    injectChatMessage(tribunalHypeMessages[Math.floor(Math.random() * tribunalHypeMessages.length)], true);
+                }
+            }, 1800);
+
+            // Also expand the chat widget
+            const widget = document.querySelector('.chat-widget');
+            if (widget) {
+                widget.style.width = '300px';
+                widget.style.boxShadow = '0 0 30px red, 0 0 60px red';
+            }
+        }
+
+        function stopChatHype() {
+            if (chatHypeInterval) clearInterval(chatHypeInterval);
+            chatHypeInterval = null;
+            setTimeout(() => {
+                injectChatMessage(tribunalPassiveMessages[Math.floor(Math.random() * tribunalPassiveMessages.length)], false);
+            }, 800);
+            // Shrink widget back
+            const widget = document.querySelector('.chat-widget');
+            if (widget) {
+                widget.style.width = '250px';
+                widget.style.boxShadow = '';
+            }
+        }
+
+        function crimeChanged() {
+            setTimeout(() => {
+                injectChatMessage(crimeChangedMessages[Math.floor(Math.random() * crimeChangedMessages.length)], false);
+            }, 400);
+        }
+
+        // Hook into anthem functions
+        const _origStart = startAnthem;
+        const _origStop = stopAnthem;
+        window.startAnthem = function() { _origStart(); startChatHype(); };
+        window.stopAnthem = function() { _origStop(); stopChatHype(); };
+
+        </script>
+        <div id="balanceWarning" style="color:red;font-size:13px;margin-top:8px;display:none;">⚠️ INSUFFICIENT KRUBLZ. Buy more above. Is not negotiable.</div>
+        <p class="tribunal-disclaimer">*Payment processed in Krublz. No refund on verdict. No refund on shame. Friendship damage is collateral.</p>
+    </div>
+
+    <!-- VERDICT OUTPUT -->
+    <div class="verdict-container" id="verdictContainer" style="display:none;">
+        <div class="verdict-stamp" id="verdictStamp">ОФИЦИАЛЬНО</div>
+        <div class="verdict-header">
+            🇷🇺 КЛОУТ КЛУБ™ — OFFICIAL TRIBUNAL VERDICT 🇷🇺<br>
+            <span class="verdict-case-num" id="verdictCaseNum"></span>
+            <span class="verdict-tier-label" id="verdictTierLabel"></span>
+        </div>
+        <div class="verdict-accused-photo" id="verdictPhoto" style="display:none;">
+            <img id="verdictPhotoImg" src="" alt="The Accused">
+            <div class="photo-label">THE ACCUSED</div>
+        </div>
+        <div class="verdict-body" id="verdictBody">
+            <div class="verdict-loading" id="verdictLoading">⚖️ Tribunal is deliberating...<br><span class="loading-dots">...</span></div>
+            <div id="verdictText" style="display:none;white-space:pre-wrap;"></div>
+        </div>
+        <div class="verdict-footer">
+            — Comrade Kloutsky, Chief Judge of Internet Crimes<br>
+            <span style="font-size:11px;">Клоут Клуб™ | Not Responsible For Friendship Damage | realhelpdesk@aol.famemaker.biz.ru</span>
+        </div>
+        <div class="verdict-actions" id="verdictActions" style="display:none;">
+            <button class="vaction-btn" onclick="shareVerdict()">📤 COPY & SEND TO CRIMINAL</button>
+            <button class="vaction-btn vaction-tweet" id="tweetBtn" style="display:none;" onclick="tweetVerdict()">🐦 POST TO TWITTER/X</button>
+            <button class="vaction-btn vaction-new" onclick="resetTribunal()">⚖️ SENTENCE ANOTHER CRIMINAL</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .tribunal-outer {
+        background: linear-gradient(135deg, #0a0000, #1a0505);
+        border-top: 5px double red;
+        border-bottom: 5px double red;
+        padding: 30px 20px;
+        margin: 20px 0;
+        color: #ffcc00;
+    }
+    .tribunal-outer > h2 {
+        font-size: 30px;
+        color: red;
+        text-shadow: 2px 2px black, 0 0 20px red;
+        letter-spacing: 3px;
+    }
+    .tribunal-intro {
+        color: #888;
+        font-size: 14px;
+        font-weight: normal;
+        margin-bottom: 25px;
+    }
+
+    /* TIER CARDS */
+    .tier-selector {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+    }
+    .tier-card {
+        width: 240px;
+        padding: 20px 15px;
+        background: #0a0a0a;
+        border: 2px solid #333;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+    }
+    .tier-card:hover { border-color: gold; transform: translateY(-3px); }
+    .active-tier { border: 3px solid gold !important; box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+    .tier-peoples { border-color: #cd7f32; }
+    .tier-public  { border-color: #c0c0c0; }
+    .tier-supreme { border-color: red; }
+    .tier-crown { font-size: 30px; margin-bottom: 5px; }
+    .tier-popular {
+        font-size: 10px;
+        color: gold;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+    }
+    .tier-name { font-size: 13px; font-weight: bold; color: white; letter-spacing: 1px; }
+    .tier-english { font-size: 10px; color: #555; margin: 3px 0 10px; }
+    .tier-cost { font-size: 22px; color: lime; font-weight: bold; margin-bottom: 12px; }
+    .tier-features { text-align: left; font-size: 11px; font-weight: normal; line-height: 1.8; }
+    .tf { color: #888; }
+    .tf.red { color: #333; }
+    .tier-select-btn {
+        margin-top: 12px;
+        background: #222;
+        color: #aaa;
+        border: 1px solid #444;
+        padding: 8px;
+        font-size: 11px;
+        font-family: "Comic Sans MS", sans-serif;
+        letter-spacing: 1px;
+        cursor: pointer;
+    }
+    .selected-btn {
+        background: gold !important;
+        color: black !important;
+        border-color: gold !important;
+        font-weight: bold;
+    }
+
+    /* FORM */
+    .tribunal-form-box {
+        background: rgba(0,0,0,0.6);
+        border: 2px solid #330000;
+        padding: 25px;
+        max-width: 700px;
+        margin: 0 auto;
+        text-align: left;
+    }
+    .selected-tier-display {
+        background: #111;
+        color: gold;
+        padding: 10px;
+        font-size: 13px;
+        margin-bottom: 20px;
+        border: 1px solid #330000;
+        text-align: center;
+    }
+    .tform-row { margin: 14px 0; }
+    .tform-row label {
+        display: block;
+        color: red;
+        font-size: 12px;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+    }
+    .tform-row input[type="text"],
+    .tform-row select {
+        width: 100%;
+        padding: 10px;
+        background: #111;
+        border: 2px solid #330000;
+        color: lime;
+        font-family: "Comic Sans MS", sans-serif;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+    .tform-row input[type="file"] {
+        color: #aaa;
+        font-size: 13px;
+    }
+    .photo-preview { margin-top: 8px; }
+    .tribunal-submit-btn {
+        width: 100%;
+        background: red;
+        color: yellow;
+        border: 4px solid yellow;
+        font-family: "Comic Sans MS", sans-serif;
+        font-size: 22px;
+        font-weight: bold;
+        padding: 15px;
+        cursor: pointer;
+        margin-top: 20px;
+        animation: buttonColorShift 2s infinite alternate;
+        letter-spacing: 2px;
+    }
+    .tribunal-submit-btn:hover { background: darkred; box-shadow: 0 0 25px red; }
+    .tribunal-disclaimer { color: #333; font-size: 10px; font-weight: normal; margin-top: 8px; }
+
+    /* VERDICT */
+    .verdict-container {
+        background: #f5f0dc;
+        color: #1a0000;
+        border: 4px double #8b0000;
+        margin: 20px auto;
+        padding: 30px;
+        max-width: 700px;
+        position: relative;
+        font-family: "Courier New", monospace;
+        text-align: left;
+        box-shadow: 0 0 40px rgba(255,0,0,0.3);
+    }
+    .verdict-stamp {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        border: 5px solid red;
+        color: red;
+        font-size: 24px;
+        font-weight: bold;
+        padding: 8px 12px;
+        transform: rotate(-15deg);
+        opacity: 0.7;
+        letter-spacing: 3px;
+        font-family: "Comic Sans MS", sans-serif;
+    }
+    .verdict-header {
+        font-size: 15px;
+        font-weight: bold;
+        text-align: center;
+        border-bottom: 2px solid #8b0000;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        color: #8b0000;
+    }
+    .verdict-case-num { font-size: 10px; color: #888; display: block; margin-top: 3px; }
+    .verdict-tier-label { font-size: 10px; color: #aa0000; display: block; }
+    .verdict-accused-photo {
+        float: right;
+        margin: 0 0 10px 15px;
+        text-align: center;
+    }
+    .verdict-accused-photo img {
+        max-width: 120px;
+        max-height: 120px;
+        border: 3px solid red;
+        display: block;
+    }
+    .photo-label { font-size: 9px; color: red; text-align: center; letter-spacing: 2px; margin-top: 3px; }
+    .verdict-body { font-size: 14px; line-height: 1.7; color: #1a0000; min-height: 100px; overflow: hidden; }
+    .verdict-loading { text-align: center; color: #8b0000; font-size: 16px; padding: 20px; }
+    .loading-dots { animation: blink 1s infinite; }
+    @keyframes blink { 0%,100%{opacity:1}50%{opacity:0} }
+    .verdict-footer {
+        margin-top: 20px;
+        border-top: 1px solid #8b0000;
+        padding-top: 10px;
+        font-size: 12px;
+        color: #8b0000;
+        text-align: right;
+        clear: both;
+    }
+    .verdict-actions { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+    .vaction-btn {
+        flex: 1;
+        background: #8b0000;
+        color: yellow;
+        border: 2px solid yellow;
+        font-family: "Comic Sans MS", sans-serif;
+        font-size: 14px;
+        padding: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        min-width: 150px;
+    }
+    .vaction-btn:hover { background: red; }
+    .vaction-tweet { background: #000; border-color: #1DA1F2; color: #1DA1F2; }
+    .vaction-tweet:hover { background: #1DA1F2; color: white; }
+    .vaction-new { background: #003300; border-color: lime; color: lime; }
+    .vaction-new:hover { background: #005500; }
+</style>
+
+<script>
+    let selectedTier = 'public';
+    const tierCosts = { peoples: 300, public: 700, supreme: 1300 };
+    const tierNames = { peoples: 'НАРОДНЫЙ ТРИБУНАЛ', public: 'ПУБЛИЧНЫЙ ТРИБУНАЛ', supreme: 'ВЕРХОВНЫЙ ТРИБУНАЛ' };
+
+    function selectTier(tier) {
+        selectedTier = tier;
+        ['peoples','public','supreme'].forEach(t => {
+            document.querySelector(`.tier-${t}`).classList.remove('active-tier');
+            const btn = document.getElementById(`btn-${t}`);
+            btn.classList.remove('selected-btn');
+            btn.innerText = 'SELECT THIS TRIBUNAL';
+        });
+        document.querySelector(`.tier-${tier}`).classList.add('active-tier');
+        const btn = document.getElementById(`btn-${tier}`);
+        btn.classList.add('selected-btn');
+        btn.innerText = '✅ SELECTED';
+
+        document.getElementById('selectedTierName').innerText = tierNames[tier];
+        document.getElementById('selectedTierCost').innerText = '₭ ' + tierCosts[tier];
+
+        // Show/hide photo and twitter fields
+        const showUpper = tier !== 'peoples';
+        document.getElementById('twitterRow').style.opacity = showUpper ? '1' : '0.3';
+        document.getElementById('photoRow').style.opacity = showUpper ? '1' : '0.3';
+    }
+
+    // Photo preview
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('formBalance').innerText = KrublzState.balance.toLocaleString();
+        document.getElementById('criminalPhoto').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.getElementById('photoImg').src = e.target.result;
+                    document.getElementById('photoPreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        selectTier('public');
+    });
+
+    async function conductTribunal() {
+        const cost = tierCosts[selectedTier];
+        const balance = KrublzState.balance;
+        const warning = document.getElementById('balanceWarning');
+
+        if (balance < cost) {
+            warning.style.display = 'block';
+            warning.innerText = `⚠️ INSUFFICIENT KRUBLZ. You have ₭${balance} but need ₭${cost}. Buy more above. Is not negotiable.`;
+            return;
+        }
+        warning.style.display = 'none';
+
+        const name = document.getElementById('criminalName').value.trim() || 'This Person';
+        const twitter = document.getElementById('criminalTwitter').value.trim();
+        const crime = document.getElementById('crimeSelect').value;
+        const severity = document.getElementById('severitySelect').value;
+        const prosecutor = document.getElementById('prosecutorName').value.trim() || 'Anonymous Komrade';
+        const photoSrc = document.getElementById('photoImg').src;
+        const hasPhoto = document.getElementById('photoPreview').style.display !== 'none' && photoSrc;
+
+        // Deduct Krublz
+        KrublzState.balance = balance - cost;
+        document.getElementById('formBalance').innerText = KrublzState.balance.toLocaleString();
+
+        // Update criminal record
+        const existing = KrublzState.getCriminal(name) || { displayName: name, count: 0, crimes: [] };
+        existing.count = (existing.count || 0) + 1;
+        existing.crimes = existing.crimes || [];
+        existing.crimes.push({ crime, tier: tierNames[selectedTier], date: new Date().toLocaleDateString() });
+        KrublzState.setCriminal(name, existing);
+
+        // Add prosecutor to spenders board
+        KrublzState.addSpender(prosecutor, cost);
+
+        const caseNum = 'CASE #КК-' + Math.floor(Math.random() * 90000 + 10000) + '-' + new Date().getFullYear();
+        const offenseCount = existing.count;
+        const offenderTitle = getOffenderTitle(offenseCount);
+
+        document.getElementById('verdictCaseNum').innerText = caseNum + ' | Offense #' + offenseCount + ' | ' + offenderTitle;
+        document.getElementById('verdictTierLabel').innerText = tierNames[selectedTier];
+
+        const container = document.getElementById('verdictContainer');
+        const loading = document.getElementById('verdictLoading');
+        const verdictText = document.getElementById('verdictText');
+        const verdictActions = document.getElementById('verdictActions');
+        const tweetBtn = document.getElementById('tweetBtn');
+
+        container.style.display = 'block';
+        loading.style.display = 'block';
+        verdictText.style.display = 'none';
+        verdictActions.style.display = 'none';
+
+        // Photo
+        const photoContainer = document.getElementById('verdictPhoto');
+        if (hasPhoto && selectedTier !== 'peoples') {
+            document.getElementById('verdictPhotoImg').src = photoSrc;
+            photoContainer.style.display = 'block';
+        } else {
+            photoContainer.style.display = 'none';
+        }
+
+        container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Build prompt based on tier
+        let prompt = '';
+        if (selectedTier === 'peoples') {
+            prompt = `You are Comrade Kloutsky, Chief Judge of the Клоут Клуб™ Official Internet Tribunal. You speak in broken English mixed with overly formal Soviet bureaucratic language.
+
+The accused: ${name}
+Their crime: ${crime}
+Severity: ${severity}
+This is offense number ${offenseCount} for this criminal. Offender title: ${offenderTitle}
+
+Write a People's Tribunal verdict — 3-4 sentences. Include: formal charge, their Clout Tier demotion (pick from: BABUSHKA TIER, DIAL-UP TIER, WINDOWS VISTA TIER, MYSPACE TIER, NOKIA 3310 TIER), a short sentence (something absurd like banned from filters for 30 days). End with "So it is written. So it shall be done." If this is a repeat offense, mention it ominously.`;
+        } else if (selectedTier === 'public') {
+            prompt = `You are Comrade Kloutsky, Chief Judge of the Клоут Клуб™ Official Internet Tribunal. You speak in broken English mixed with overly formal Soviet bureaucratic language. This is a PUBLIC tribunal — the verdict will be posted to the internet.
+
+The accused: ${name}${twitter ? ' (Twitter: ' + twitter + ')' : ''}
+Their crime: ${crime}
+Severity: ${severity}
+This is offense number ${offenseCount}. Offender title: ${offenderTitle}
+
+Write a Public Tribunal verdict — 5-6 sentences. Include: dramatic formal opening, multiple charges elaborated, their Clout Tier demotion (pick from: BABUSHKA TIER, DIAL-UP TIER, WINDOWS VISTA TIER, MYSPACE TIER, NOKIA 3310 TIER, FROZEN LADA TIER, EXPIRED GROUPON TIER), a harsher public sentence, mention that this verdict is now PUBLIC RECORD on the internet. End with "So it is written. So it shall be posted. The internet will know." If repeat offense, be extra dramatic about their habitual criminality.`;
+        } else {
+            prompt = `You are Comrade Kloutsky, Chief Judge of the Клоут Клуб™ Official Internet Tribunal. You speak in broken English mixed with overly formal Soviet bureaucratic language. This is the SUPREME KOMRADE TRIBUNAL — maximum drama, maximum shame.
+
+The accused: ${name}${twitter ? ' (Twitter: ' + twitter + ')' : ''}
+Their crime: ${crime}
+Severity: ${severity}
+This is offense number ${offenseCount}. Offender title: ${offenderTitle}
+
+Write a full Supreme Tribunal verdict — 7-9 sentences. Include: dramatic ceremonial opening, formal reading of charges with elaboration, fabricated witness testimony from "a concerned komrade who wish to remain anonymous", their Clout Tier demotion (pick something devastating like EXPIRED GROUPON TIER, FROZEN LADA TIER, WINDOWS VISTA TIER), a multi-part sentence (several absurd punishments stacked), a declaration that this becomes PERMANENT PUBLIC RECORD, and a final ominous warning to any who would defend them. End with "So it is written by order of the Supreme Komrade Tribunal. Appeal is not available. Was never available. Goodbye." If repeat offense, declare them an escalating threat to all internet order.`;
+        }
+
+        try {
+            const response = await fetch("/api/tribunal", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ prompt })
+            });
+            const data = await response.json();
+            if (data.error) throw new Error(data.error);
+            const verdict = data.verdict;
+
+            loading.style.display = 'none';
+            verdictText.style.display = 'block';
+            verdictText.innerText = verdict;
+            verdictActions.style.display = 'flex';
+
+            if (selectedTier !== 'peoples') {
+                tweetBtn.style.display = 'block';
+            }
+
+            // Store for sharing
+            window._lastVerdict = { name, twitter, crime, verdict, caseNum, tier: tierNames[selectedTier], prosecutor, photoSrc: hasPhoto ? photoSrc : null };
+
+            // Add to leaderboard
+            KrublzState.addToLeaderboard({
+                criminal: name,
+                crime,
+                tier: tierNames[selectedTier],
+                time: new Date().toLocaleTimeString()
+            });
+            updateLeaderboard();
+
+        } catch(err) {
+            loading.style.display = 'none';
+            verdictText.style.display = 'block';
+            verdictText.innerText = "⚠️ Tribunal server overloaded (too many criminals today). Try again. Or just tell them they are BABUSHKA TIER. Is same humiliation.";
+            verdictActions.style.display = 'flex';
+        }
+    }
+
+    function shareVerdict() {
+        const v = window._lastVerdict;
+        if (!v) return;
+        const twitterTag = v.twitter ? ` ${v.twitter}` : '';
+        const text = `⚖️ OFFICIAL КЛОУТ КЛУБ™ TRIBUNAL VERDICT ⚖️\n\n${v.caseNum}\nThe accused:${twitterTag} ${v.name}\nCrime: ${v.crime}\nTribunal: ${v.tier}\n\n${v.verdict}\n\n— Клоут Клуб™ #КлоутТрибунал`;
+        navigator.clipboard.writeText(text).then(() => {
+            alert('✅ Verdict copied to clipboard!\n\nSend to criminal immediately. Is law. Is justice. Is Клоут Клуб.');
+        });
+    }
+
+    function tweetVerdict() {
+        const v = window._lastVerdict;
+        if (!v) return;
+        const twitterTag = v.twitter ? ` ${v.twitter}` : '';
+        const tweetText = `⚖️ OFFICIAL VERDICT from @KloutKlub\n\n${twitterTag} ${v.name} has been sentenced for: ${v.crime}\n\nTier: ${v.tier}\n\n#КлоутТрибунал #KloutKlub`;
+        const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+        window.open(url, '_blank');
+    }
+
+    function resetTribunal() {
+        document.getElementById('verdictContainer').style.display = 'none';
+        document.getElementById('criminalName').value = '';
+        document.getElementById('criminalTwitter').value = '';
+        document.getElementById('criminalPhoto').value = '';
+        document.getElementById('photoPreview').style.display = 'none';
+        document.getElementById('formBalance').innerText = KrublzState.balance.toLocaleString();
+        window.scrollTo({ top: document.querySelector('.tribunal-outer').offsetTop - 50, behavior: 'smooth' });
+    }
+</script>
+
+<!-- ⭐ GULAG INVESTMENT BANNER ⭐ -->
+<div class="gulag-banner">
+    <span>✦ GULAG INVESTMENT OPPORTUNITES!</span>
+</div>
+
+<style>
+    .gulag-banner {
+        background: black;
+        color: #ff6600;
+        font-size: 36px;
+        font-weight: bold;
+        text-align: center;
+        padding: 18px;
+        border-top: 5px solid #ff6600;
+        border-bottom: 5px solid #ff6600;
+        margin: 20px 0;
+        font-family: "Comic Sans MS", sans-serif;
+        letter-spacing: 2px;
+    }
+</style>
+
+
+<!-- 🔥 VIP SECRET CLUB 🔥 -->
+<div class="vip-container">
+    <h2>🔒 JOIN THE ULTRA-RARE VIP TELEGRAM GROUP 🔒</h2>
+    <p>✅ SECRET methods to **beat Instagram algorithm** & become *famous overnight!*</p>
+    <p>💎 *Entry Fee: UsD 999.99$ (No Refunds, But 1000% Real!)*</p>
+    <button class="vip-button">🔥 JOIN NOW 🔥</button>
+</div>
+
+<style>
+    .vip-container {
+        background: black;
+        color: cyan;
+        padding: 20px;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: center;
+        border: 5px solid magenta;
+        margin: 20px auto;
+        width: 50%;
+    }
+    .vip-button {
+        padding: 10px;
+        font-size: 18px;
+        background: red;
+        color: white;
+        border: 3px solid yellow;
+        cursor: pointer;
+    }
+</style>
+
+
+
+
+
+<!-- TRIBUNAL SUCCESS STORIES -->
+<div class="testimonial-container">
+    <h2>✨ TRIBUNAL SUCCESS STORIES ✨</h2>
+    <p style="color:#555;font-size:13px;font-weight:normal;">Real results from real prosecutors. Names changed to protect innocent. Criminal names kept to protect nobody.</p>
+
+    <div class="testimonial">
+        <img src="photoreview3.png" alt="Prosecutor">
+        <p>🚀 "I sentence my ex for posting 'living my best life' photo 3 day after breakup. Supreme Tribunal. WINDOWS VISTA TIER. He now has 14 convictions. Is beautiful." &ndash; Katya V., Satisfied Prosecutor</p>
+    </div>
+    <div class="testimonial">
+        <img src="photoreview2.png" alt="Prosecutor">
+        <p>💰 "Whole class chip in to sentence PE teacher for making us run in rain. He reach ENEMY OF INTERNET at 11 convictions. We frame verdict. Hang in locker." &ndash; Anonymous Student, Midwest</p>
+    </div>
+    <div class="testimonial">
+        <img src="photoreview1.png" alt="Prosecutor">
+        <p>📈 "My brother sentence me first as joke. I buy Dark Komrade bundle and sentence him 6 time. He is now Habitual Enemy of Clout. Family dinner very awkward. Worth every Krublz." &ndash; Dmitry 'Big Rubles' K.</p>
+    </div>
+    <div class="testimonial" style="border-top:1px solid #111;padding-top:10px;margin-top:10px;">
+        <img src="photoreview3.png" alt="Prosecutor" style="filter:grayscale(1);">
+        <p style="color:#444;">🔇 "I sentence boss for saying 'circle back' in every meeting. Public Tribunal. Tweet go out. Boss see tweet. I get fired. No regret. Verdict was correct." &ndash; Former Employee, Currently Job Searching</p>
+    </div>
+</div>
+
+<style>
+    .testimonial-container {
+        background: black;
+        color: lime;
+        padding: 25px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        border: 5px solid red;
+        margin: 20px auto;
+        width: 60%;
+    }
+    .testimonial {
+        display: flex;
+        align-items: flex-start;
+        margin: 15px 0;
+        text-align: left;
+        gap: 15px;
+    }
+    .testimonial img {
+        width: 80px;
+        height: 80px;
+        flex-shrink: 0;
+        border: 2px solid yellow;
+        object-fit: cover;
+    }
+    .testimonial p { font-size: 14px; font-weight: normal; color: #aaa; line-height: 1.6; margin: 0; }
+</style>
+
+<div class="reviews-bar">
+        <div class="reviews">
+            <span>⭐ "I sentence 7 people this month. Family say I have problem. Tribunal say I have Oligarch badge." - Komrade_Destroyer ⭐</span>
+            <span>⭐ "Boss say 'per my last email' one time. He now EXPIRED GROUPON TIER. Justice served." - ProudProsecutor ⭐</span>
+            <span>⭐ "Verdict say friend is NOKIA 3310 TIER. Friend agree. Friendship survive. Barely." - Алексей ⭐</span>
+            <span>⭐ "Teacher get 10 conviction from students. ENEMY OF INTERNET. He frame it and put on desk." - Anonymous Class 7B ⭐</span>
+            <span>⭐ "I buy Dark Komrade bundle. No regret. Many enemy. Much justice." - Дмитрий 'Big Rubles' ⭐</span>
+            <span>⭐ "Comrade Kloutsky very wise. Verdict say ex is FROZEN LADA TIER. Accurate." - Tatiana K. ⭐</span>
+            <span>⭐ "Five people sentence same coworker. He now Habitual Enemy of Clout. Office morale very high." - Иван ⭐</span>
+            <span>⭐ "I spend 6500 Krublz. I am Dark Komrade. My enemies are BABUSHKA TIER. This is balance." - Николай ⭐</span>
+        </div>
+    </div>
+    <style>
+        .reviews-bar {
+            position: fixed;
+            bottom: 0px;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            background: black;
+            color: yellow;
+            padding: 8px 0;
+            font-size: 16px;
+            font-weight: bold;
+            border-top: 2px solid red;
+            z-index: 998;
+        }
+        .reviews {
+            display: inline-block;
+            animation: scrollReviews 30s linear infinite;
+        }
+        @keyframes scrollReviews {
+            from { transform: translateX(100vw); }
+            to { transform: translateX(-100%); }
+        }
+    </style>
+    
+
+
+
+
+<!-- 💬 ULTRA-AGGRESSIVE LIVE CHAT SUPPORT -->
+<div class="chat-widget">
+    <div class="chat-header">💬 LIVE SUPPORT (100% REAL) 🚀</div>
+    <div class="chat-messages" id="chatMessages">
+        <div class="chat-message">🔵 [Support] Добро пожаловать в Клоут Клуб! Чем помочь?</div>
+    </div>
+    <input type="text" id="userMessage" placeholder="Type message..." disabled>
+</div>
+
+<style>
+    /* Chat Widget Container */
+    .chat-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 250px;
+        background: black;
+        color: lime;
+        font-size: 14px;
+        border: 3px solid red;
+        box-shadow: 0 0 10px red;
+        border-radius: 10px;
+        overflow: hidden;
+        z-index: 1000;
+        animation: flickerEffect 1.5s infinite alternate; /* Flashing effect */
+    }
+
+    /* Chat Header */
+    .chat-header {
+        background: red;
+        color: white;
+        padding: 8px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    /* Chat Messages Box */
+    .chat-messages {
+        height: 150px;
+        overflow-y: auto;
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Chat Message Style */
+    .chat-message {
+        background: rgba(255, 0, 0, 0.2);
+        padding: 5px;
+        border-radius: 5px;
+        margin: 5px 0;
+    }
+
+    /* Disabled Input Field */
+    #userMessage {
+        width: 100%;
+        padding: 8px;
+        border: none;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    /* Flashing Effect */
+    @keyframes flickerEffect {
+        0% { box-shadow: 0 0 5px red; }
+        50% { box-shadow: 0 0 20px yellow; }
+        100% { box-shadow: 0 0 5px red; }
+    }
+
+    /* Shaking Effect */
+    @keyframes shakeEffect {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        50% { transform: translateX(5px); }
+        75% { transform: translateX(-5px); }
+    }
+</style>
+
+<script>
+    // Fake chat messages in Russian & broken English
+    const fakeMessages = [
+        "🔵 [Support] Здравствуйте! Вы нуждаете помощь?",
+        "🔵 [Support] Yes yes, 100% real follower, no bot, trust me bro.",
+        "🔵 [Support] Your payment still processing. Maybe.",
+        "🔵 [Support] Почему вы спрашиваете о возврате денег? 😂",
+        "🔵 [Support] BUY MORE FOR VIP STATUS!!! 🚀🚀🚀",
+        "🔵 [Support] Sorry sir, all managers busy, but we care for you!",
+        "🔵 [Support] If not receive clout, please wait 72 hour minimum.",
+        "🔵 [Support] You pay in crypto, no refund possible. Is law.",
+        "🔵 [Support] WE SEE YOU BROWSING. WHY NO PAY YET? 😡",
+        "🔵 [Support] ONLY 2 SPOTS LEFT FOR VIP!!! BUY NOW!!!",
+        "🔵 [Support] SPECIAL PRICE 5 MINUTES ONLY! ⏳",
+        "🔵 [Support] Hello friend! How many followers do you want today? We give best deal!",
+        "🔵 [Support]  Thank you for visiting! Many happy customers today! You be next?",
+        "🔵 [Support] Big sale now! You lucky person! Buy today, clout come FAST!",
+        "🔵 [Support] 100% safe, 200% real, 300% fast service. Trust bro!",
+        "🔵 [Support] Only VIP people use this site. You VIP? Click buy and become one!",
+        "🔵 [Support] You look, but you not buy? Why? Do you not want to be famous??",
+        "🔵 [Support] Other people buy. You still think? Why wait? More expensive later.",
+        "🔵 [Support] Why you no pay yet? You think fame come free?",
+        "🔵 [Support] I see you hesitate… Is problem? We best service, no doubt. Buy now!",
+        "🔵 [Support] Maybe you do not deserve clout? Is OK, not everyone become famous.",
+        "🔵 [Support] LAST CHANCE! Price go UP soon! You WAIT, you LOSE!",
+        "🔵 [Support] Only 2 VIP spots left!! Pay now before too late!",
+        "🔵 [Support] You close tab? Bad choice… We give you ONE MORE CHANCE. Buy now.",
+        "🔵 [Support] OTHER PEOPLE are buying right now. You miss out? Bad idea.",
+        "🔵 [Support] Someone in YOUR CITY just bought 100K followers. You stay loser?",
+        "🔵 [Support] We see you looking at site… Why you not buy? 👀",
+        "🔵 [Support] We tracking your visit… You come back many times. Time to buy?",
+        "🔵 [Support] Nice location! Many people from [LOCATION] buy here! You next?",
+        "🔵 [Support] We know you want clout. We watching. You ready to pay?",
+        "🔵 [Support] Funny thing… We KNOW you thinking about buying. Just do it now."
+
+
+    ];
+
+
+    function sendFakeMessage() {
+        const chatBox = document.getElementById("chatMessages");
+
+        // Create a fake typing delay
+        const typingMessage = document.createElement("div");
+        typingMessage.classList.add("chat-message");
+        typingMessage.innerText = "🔵 [Support] ...печатает";
+        chatBox.appendChild(typingMessage);
+
+        setTimeout(() => {
+            chatBox.removeChild(typingMessage);
+            const newMessage = document.createElement("div");
+            newMessage.classList.add("chat-message");
+            newMessage.innerText = fakeMessages[Math.floor(Math.random() * fakeMessages.length)];
+            chatBox.appendChild(newMessage);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }, 3000); // Message appears after "typing" delay
+    }
+
+    // Randomly send fake messages every 10-20 seconds
+    setInterval(sendFakeMessage, Math.random() * (20000 - 10000) + 10000);
+
+    // Flash Red & Shake Every 30 Seconds
+    setInterval(() => {
+        document.querySelector(".chat-widget").style.animation = "shakeEffect 0.5s";
+        setTimeout(() => {
+            document.querySelector(".chat-widget").style.animation = "flickerEffect 1.5s infinite alternate";
+        }, 500);
+    }, 30000);
+
+    // Random Pop-Up Alert to Pressure Users
+    setInterval(() => {
+        alert("🚀 SPECIAL DISCOUNT! BUY NOW BEFORE PRICE GO HIGHER!!!");
+    }, Math.random() * (90000 - 60000) + 60000); // Alert pops up every 1-1.5 minutes
+</script>
+
+
+
+
+
+
+
+
+<!-- 🏅 ГАРАНТИРОВАННЫЕ РЕЗУЛЬТАТЫ 🏅 -->
+<div class="guarantee-container">
+    <h2>✅ ГАРАНТИРОВАННЫЕ РЕЗУЛЬТАТЫ (НАВЕРНОЕ) ✅</h2>
+    <p>💰 "90-дневная гарантия возврата денег (если мы захотим)"</p>
+    <p>💎 "100% удовлетворенность или мы вас заблокируем"</p>
+    <p>🚀 "Голубая галочка в Instagram гарантирована! (Может быть)"</p>
+</div>
+
+<style>
+    .guarantee-container {
+        background: black;
+        color: orange;
+        padding: 20px;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: center;
+        border: 5px solid white;
+        margin: 20px auto;
+        width: 50%;
+    }
+</style>
+
+
+
+<footer>
+        <p>&copy; 2024 Клоут Клуб | Best Famous Maker Inc. Ltd. Russia *Not Scam*</p>
+        <p>🚀 Contact Support: realhelpdesk@aol.famemaker.biz.ru 🚀</p>
+    </footer>
+    
+    <style>
+        footer {
+            margin-top: 100px;
+            padding: 50px;
+            background: repeating-linear-gradient(45deg, red, blue 10px, green 20px);
+            font-size: 15px;
+            font-weight: bold;
+        }
+    </style>
+    
+
+
+
+
+
