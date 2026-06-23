@@ -1529,13 +1529,6 @@ Write a full Supreme Tribunal verdict — 7-9 sentences. Include: dramatic cerem
             const response = await fetch("/api/tribunal", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-             FIND THIS (and replace the whole fetch block containing it):
-
-body: JSON.stringify({ prompt })
-
-
-REPLACE THE ENTIRE BLOCK WITH THIS:
-
                 body: JSON.stringify({ 
                     prompt,
                     criminal_name: name,
@@ -1561,10 +1554,39 @@ REPLACE THE ENTIRE BLOCK WITH THIS:
                 const recentEl = document.getElementById('recentVerdicts');
                 if (recentEl) {
                     recentEl.innerHTML = data.recentVerdicts.map(v => 
-                        '<div class="lb-entry" style="flex-direction:column;align-items:flex-start;gap:2px;"><span style="color:#ff6600;font-size:12px;">' + v.criminal_name + ' - ' + v.tier + '</span><span style="color:#444;font-size:10px;">' + v.crime.substring(0,45) + '...</span></div>'
+                        '<div class="lb-entry" style="flex-direction:column;align-items:flex-start;gap:2px;"><span style="color:#ff6600;font-size:12px;">' + v.criminal_name + ' — ' + v.tier + '</span><span style="color:#444;font-size:10px;">' + v.crime.substring(0,45) + '...</span></div>'
                     ).join('');
                 }
             }
+
+            loading.style.display = 'none';
+            verdictText.style.display = 'block';
+            verdictText.innerText = verdict;
+            verdictActions.style.display = 'flex';
+
+            if (selectedTier !== 'peoples') {
+                tweetBtn.style.display = 'block';
+            }
+
+            // Store for sharing
+            window._lastVerdict = { name, twitter, crime, verdict, caseNum, tier: tierNames[selectedTier], prosecutor, photoSrc: hasPhoto ? photoSrc : null };
+
+            // Add to leaderboard
+            KrublzState.addToLeaderboard({
+                criminal: name,
+                crime,
+                tier: tierNames[selectedTier],
+                time: new Date().toLocaleTimeString()
+            });
+            updateLeaderboard();
+
+        } catch(err) {
+            loading.style.display = 'none';
+            verdictText.style.display = 'block';
+            verdictText.innerText = "⚠️ Tribunal server overloaded (too many criminals today). Try again. Or just tell them they are BABUSHKA TIER. Is same humiliation.";
+            verdictActions.style.display = 'flex';
+        }
+    }
 
     function shareVerdict() {
         const v = window._lastVerdict;
@@ -1943,9 +1965,3 @@ REPLACE THE ENTIRE BLOCK WITH THIS:
             font-weight: bold;
         }
     </style>
-    
-
-
-
-
-
