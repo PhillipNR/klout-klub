@@ -65,6 +65,201 @@
         <h1>КЛОУТ КЛУБ™ - True Internet Power</h1>
         <img src="header1r.png" class="top-right-image" alt="Extra Image">
     </header>
+    <!-- AUTH BUTTON IN HEADER -->
+    <div id="authButtonContainer" style="position:absolute;top:10px;right:280px;z-index:100;">
+        <button id="authBtn" onclick="showAuthModal('login')" style="background:red;color:yellow;border:2px solid yellow;font-family:'Comic Sans MS',sans-serif;font-size:13px;font-weight:bold;padding:6px 14px;cursor:pointer;letter-spacing:1px;">
+            LOGIN / REGISTER
+        </button>
+        <div id="userBadge" style="display:none;text-align:right;">
+            <span id="userRank" style="color:gold;font-size:11px;display:block;"></span>
+            <span id="userName" style="color:lime;font-size:13px;font-weight:bold;"></span>
+            <span id="userBalance" style="color:lime;font-size:11px;display:block;"></span>
+            <button onclick="logout()" style="background:none;border:none;color:#444;font-size:10px;cursor:pointer;font-family:'Comic Sans MS',sans-serif;">logout</button>
+        </div>
+    </div>
+
+    <!-- AUTH MODAL -->
+    <div id="authModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center;">
+        <div style="background:#0a0000;border:4px double red;padding:35px;max-width:420px;width:90%;position:relative;box-shadow:0 0 50px red;">
+            <button onclick="closeAuthModal()" style="position:absolute;top:10px;right:15px;background:none;border:none;color:#555;font-size:20px;cursor:pointer;">X</button>
+            <div style="display:flex;margin-bottom:25px;border-bottom:2px solid #330000;">
+                <button id="loginTab" onclick="switchAuthTab('login')" style="flex:1;background:none;border:none;color:gold;font-family:'Comic Sans MS',sans-serif;font-size:16px;font-weight:bold;padding:10px;cursor:pointer;border-bottom:3px solid red;">LOGIN</button>
+                <button id="signupTab" onclick="switchAuthTab('signup')" style="flex:1;background:none;border:none;color:#555;font-family:'Comic Sans MS',sans-serif;font-size:16px;font-weight:bold;padding:10px;cursor:pointer;">JOIN KLUB</button>
+            </div>
+            <div id="authError" style="display:none;background:rgba(255,0,0,0.2);border:1px solid red;color:red;padding:8px;margin-bottom:15px;font-size:13px;"></div>
+            <div id="authSuccess" style="display:none;background:rgba(0,255,0,0.1);border:1px solid lime;color:lime;padding:8px;margin-bottom:15px;font-size:13px;"></div>
+            <div id="loginForm">
+                <div style="margin-bottom:15px;">
+                    <label style="display:block;color:red;font-size:11px;letter-spacing:2px;margin-bottom:5px;">EMAIL ADDRESS:</label>
+                    <input type="email" id="loginEmail" placeholder="your@email.com" style="width:100%;padding:10px;background:#111;border:2px solid #330000;color:lime;font-family:'Comic Sans MS',sans-serif;font-size:14px;box-sizing:border-box;">
+                </div>
+                <div style="margin-bottom:20px;">
+                    <label style="display:block;color:red;font-size:11px;letter-spacing:2px;margin-bottom:5px;">PASSWORD:</label>
+                    <input type="password" id="loginPassword" placeholder="password" style="width:100%;padding:10px;background:#111;border:2px solid #330000;color:lime;font-family:'Comic Sans MS',sans-serif;font-size:14px;box-sizing:border-box;">
+                </div>
+                <button onclick="doLogin()" style="width:100%;background:red;color:yellow;border:3px solid yellow;font-family:'Comic Sans MS',sans-serif;font-size:18px;font-weight:bold;padding:12px;cursor:pointer;letter-spacing:2px;">ENTER THE KLUB</button>
+                <p style="color:#333;font-size:11px;margin-top:10px;font-weight:normal;">No account? Click JOIN KLUB above.</p>
+            </div>
+            <div id="signupForm" style="display:none;">
+                <div style="margin-bottom:15px;">
+                    <label style="display:block;color:red;font-size:11px;letter-spacing:2px;margin-bottom:5px;">KOMRADE NAME (public):</label>
+                    <input type="text" id="signupKomradeName" placeholder="e.g. Destroyer_of_Clout" maxlength="30" style="width:100%;padding:10px;background:#111;border:2px solid #330000;color:lime;font-family:'Comic Sans MS',sans-serif;font-size:14px;box-sizing:border-box;">
+                    <span style="color:#333;font-size:10px;">Your public name on leaderboards and verdicts.</span>
+                </div>
+                <div style="margin-bottom:15px;">
+                    <label style="display:block;color:red;font-size:11px;letter-spacing:2px;margin-bottom:5px;">EMAIL ADDRESS:</label>
+                    <input type="email" id="signupEmail" placeholder="your@email.com" style="width:100%;padding:10px;background:#111;border:2px solid #330000;color:lime;font-family:'Comic Sans MS',sans-serif;font-size:14px;box-sizing:border-box;">
+                </div>
+                <div style="margin-bottom:20px;">
+                    <label style="display:block;color:red;font-size:11px;letter-spacing:2px;margin-bottom:5px;">PASSWORD:</label>
+                    <input type="password" id="signupPassword" placeholder="password" style="width:100%;padding:10px;background:#111;border:2px solid #330000;color:lime;font-family:'Comic Sans MS',sans-serif;font-size:14px;box-sizing:border-box;">
+                </div>
+                <button onclick="doSignup()" style="width:100%;background:red;color:yellow;border:3px solid yellow;font-family:'Comic Sans MS',sans-serif;font-size:18px;font-weight:bold;padding:12px;cursor:pointer;letter-spacing:2px;">BECOME KOMRADE</button>
+                <p style="color:#333;font-size:11px;margin-top:10px;font-weight:normal;">You receive 50 FREE KRUBLZ upon joining.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var currentUser = null;
+        var currentProfile = null;
+        var accessToken = null;
+
+        try {
+            var saved = sessionStorage.getItem('klout_session');
+            if (saved) {
+                var parsed = JSON.parse(saved);
+                currentUser = parsed.user;
+                currentProfile = parsed.profile;
+                accessToken = parsed.access_token;
+            }
+        } catch(e) {}
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (currentProfile) updateAuthUI();
+        });
+
+        function showAuthModal(tab) {
+            document.getElementById('authModal').style.display = 'flex';
+            switchAuthTab(tab || 'login');
+            clearAuthMessages();
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').style.display = 'none';
+        }
+
+        function switchAuthTab(tab) {
+            document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('signupForm').style.display = tab === 'signup' ? 'block' : 'none';
+            document.getElementById('loginTab').style.color = tab === 'login' ? 'gold' : '#555';
+            document.getElementById('signupTab').style.color = tab === 'signup' ? 'gold' : '#555';
+            clearAuthMessages();
+        }
+
+        function clearAuthMessages() {
+            document.getElementById('authError').style.display = 'none';
+            document.getElementById('authSuccess').style.display = 'none';
+        }
+
+        function showAuthError(msg) {
+            var el = document.getElementById('authError');
+            el.innerText = msg;
+            el.style.display = 'block';
+        }
+
+        function showAuthSuccess(msg) {
+            var el = document.getElementById('authSuccess');
+            el.innerText = msg;
+            el.style.display = 'block';
+        }
+
+        async function doLogin() {
+            var email = document.getElementById('loginEmail').value.trim();
+            var password = document.getElementById('loginPassword').value;
+            if (!email || !password) { showAuthError('Email and password required.'); return; }
+            try {
+                var res = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'login', email: email, password: password })
+                });
+                var data = await res.json();
+                if (data.error) { showAuthError(data.error); return; }
+                currentUser = data.user;
+                currentProfile = data.profile;
+                accessToken = data.session && data.session.access_token;
+                try { sessionStorage.setItem('klout_session', JSON.stringify({ user: currentUser, profile: currentProfile, access_token: accessToken })); } catch(e) {}
+                updateAuthUI();
+                closeAuthModal();
+            } catch(e) { showAuthError('Login failed: ' + e.message); }
+        }
+
+        async function doSignup() {
+            var komradeName = document.getElementById('signupKomradeName').value.trim();
+            var email = document.getElementById('signupEmail').value.trim();
+            var password = document.getElementById('signupPassword').value;
+            if (!komradeName) { showAuthError('Komrade Name is required.'); return; }
+            if (!email || !password) { showAuthError('Email and password required.'); return; }
+            if (password.length < 6) { showAuthError('Password must be at least 6 characters.'); return; }
+            try {
+                var res = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'signup', email: email, password: password, komrade_name: komradeName })
+                });
+                var data = await res.json();
+                if (data.error) { showAuthError(data.error); return; }
+                currentUser = data.user;
+                currentProfile = data.profile;
+                accessToken = data.session && data.session.access_token;
+                if (accessToken) {
+                    try { sessionStorage.setItem('klout_session', JSON.stringify({ user: currentUser, profile: currentProfile, access_token: accessToken })); } catch(e) {}
+                    updateAuthUI();
+                    closeAuthModal();
+                    alert('DOBRO POZHALOVAT, ' + (komradeName).toUpperCase() + '!\n\nYou have been granted:\nRank: Citizen Informant\n50 FREE KRUBLZ\n\nThe Tribunal awaits your enemies.');
+                } else {
+                    showAuthSuccess('Account created! Check your email to confirm, then log in.');
+                }
+            } catch(e) { showAuthError('Signup failed: ' + e.message); }
+        }
+
+        function logout() {
+            currentUser = null;
+            currentProfile = null;
+            accessToken = null;
+            try { sessionStorage.removeItem('klout_session'); } catch(e) {}
+            updateAuthUI();
+        }
+
+        function updateAuthUI() {
+            var authBtn = document.getElementById('authBtn');
+            var userBadge = document.getElementById('userBadge');
+            if (currentProfile) {
+                authBtn.style.display = 'none';
+                userBadge.style.display = 'block';
+                document.getElementById('userRank').innerText = currentProfile.rank || 'Citizen Informant';
+                document.getElementById('userName').innerText = currentProfile.komrade_name || 'Komrade';
+                document.getElementById('userBalance').innerText = 'K ' + ((currentProfile.krublz_balance || 0)).toLocaleString() + ' KRUBLZ';
+                var balEl = document.getElementById('krublzBalance');
+                if (balEl) balEl.innerText = (currentProfile.krublz_balance || 0).toLocaleString();
+                var formBal = document.getElementById('formBalance');
+                if (formBal) formBal.innerText = (currentProfile.krublz_balance || 0).toLocaleString();
+                var prosecutorRow = document.getElementById('prosecutorRow');
+                if (prosecutorRow) prosecutorRow.style.display = 'none';
+            } else {
+                authBtn.style.display = 'block';
+                userBadge.style.display = 'none';
+                var prosecutorRow = document.getElementById('prosecutorRow');
+                if (prosecutorRow) prosecutorRow.style.display = 'block';
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            if (e.target === document.getElementById('authModal')) closeAuthModal();
+        });
+    </script>
+
 
 
 
@@ -901,7 +1096,7 @@
             </select>
         </div>
 
-        <div class="tform-row">
+        <div class="tform-row" id="prosecutorRow">
             <label>🧑‍⚖️ YOUR KOMRADE NAME (for leaderboard):</label>
             <input type="text" id="prosecutorName" placeholder="Your name as Prosecutor of Record..." maxlength="30">
         </div>
@@ -1526,20 +1721,30 @@ Write a full Supreme Tribunal verdict — 7-9 sentences. Include: dramatic cerem
         }
 
         try {
+            const tribunalHeaders = { "Content-Type": "application/json" };
+            if (typeof accessToken !== "undefined" && accessToken) tribunalHeaders["Authorization"] = "Bearer " + accessToken;
             const response = await fetch("/api/tribunal", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: tribunalHeaders,
                 body: JSON.stringify({ 
                     prompt,
                     criminal_name: name,
                     crime,
                     tier: tierNames[selectedTier],
-                    prosecutor
+                    prosecutor: (typeof currentProfile !== "undefined" && currentProfile) ? currentProfile.komrade_name : prosecutor,
+                    tier_cost: cost
                 })
             });
             const data = await response.json();
             if (data.error) throw new Error(data.error);
             const verdict = data.verdict;
+
+            // Update profile from response
+            if (data.profile && typeof currentProfile !== "undefined") {
+                currentProfile = data.profile;
+                try { sessionStorage.setItem('klout_session', JSON.stringify({ user: currentUser, profile: currentProfile, access_token: accessToken })); } catch(e) {}
+                if (typeof updateAuthUI === "function") updateAuthUI();
+            }
 
             // Update leaderboard from Supabase
             if (data.criminals && data.criminals.length > 0) {
@@ -1965,3 +2170,9 @@ Write a full Supreme Tribunal verdict — 7-9 sentences. Include: dramatic cerem
             font-weight: bold;
         }
     </style>
+    
+
+
+
+
+
