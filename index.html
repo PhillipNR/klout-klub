@@ -1529,40 +1529,42 @@ Write a full Supreme Tribunal verdict — 7-9 sentences. Include: dramatic cerem
             const response = await fetch("/api/tribunal", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt })
+             FIND THIS (and replace the whole fetch block containing it):
+
+body: JSON.stringify({ prompt })
+
+
+REPLACE THE ENTIRE BLOCK WITH THIS:
+
+                body: JSON.stringify({ 
+                    prompt,
+                    criminal_name: name,
+                    crime,
+                    tier: tierNames[selectedTier],
+                    prosecutor
+                })
             });
             const data = await response.json();
             if (data.error) throw new Error(data.error);
             const verdict = data.verdict;
 
-            loading.style.display = 'none';
-            verdictText.style.display = 'block';
-            verdictText.innerText = verdict;
-            verdictActions.style.display = 'flex';
-
-            if (selectedTier !== 'peoples') {
-                tweetBtn.style.display = 'block';
+            // Update leaderboard from Supabase
+            if (data.criminals && data.criminals.length > 0) {
+                const shameEl = document.getElementById('shamefulList');
+                if (shameEl) {
+                    shameEl.innerHTML = data.criminals.map((c, i) => 
+                        '<div class="lb-entry"><span class="lb-rank">#' + (i+1) + '</span><span class="lb-name">' + c.display_name + '<span class="offender-title">' + getOffenderTitle(c.count) + '</span></span><span class="lb-value"><span class="criminal-count">' + c.count + '</span></span></div>'
+                    ).join('');
+                }
             }
-
-            // Store for sharing
-            window._lastVerdict = { name, twitter, crime, verdict, caseNum, tier: tierNames[selectedTier], prosecutor, photoSrc: hasPhoto ? photoSrc : null };
-
-            // Add to leaderboard
-            KrublzState.addToLeaderboard({
-                criminal: name,
-                crime,
-                tier: tierNames[selectedTier],
-                time: new Date().toLocaleTimeString()
-            });
-            updateLeaderboard();
-
-        } catch(err) {
-            loading.style.display = 'none';
-            verdictText.style.display = 'block';
-            verdictText.innerText = "⚠️ Tribunal server overloaded (too many criminals today). Try again. Or just tell them they are BABUSHKA TIER. Is same humiliation.";
-            verdictActions.style.display = 'flex';
-        }
-    }
+            if (data.recentVerdicts && data.recentVerdicts.length > 0) {
+                const recentEl = document.getElementById('recentVerdicts');
+                if (recentEl) {
+                    recentEl.innerHTML = data.recentVerdicts.map(v => 
+                        '<div class="lb-entry" style="flex-direction:column;align-items:flex-start;gap:2px;"><span style="color:#ff6600;font-size:12px;">' + v.criminal_name + ' - ' + v.tier + '</span><span style="color:#444;font-size:10px;">' + v.crime.substring(0,45) + '...</span></div>'
+                    ).join('');
+                }
+            }
 
     function shareVerdict() {
         const v = window._lastVerdict;
